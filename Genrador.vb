@@ -3031,10 +3031,17 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       '========================================================================
       ' INSTRUCCIONES PARA PAGO EN TIENDAS
       '========================================================================
+      '========================================================================
+      ' INSTRUCCIONES PARA PAGO EN TIENDAS
+      '========================================================================
 
-      Dim tblTituloPasos As New iTextSharp.text.pdf.PdfPTable(1)
+      '-----------------------------------------------------------------------
+      ' TÍTULO + LÍNEA
+      '-----------------------------------------------------------------------
+      Dim tblTituloPasos As New iTextSharp.text.pdf.PdfPTable(2)
       tblTituloPasos.TotalWidth = 540.0F
       tblTituloPasos.LockedWidth = True
+      tblTituloPasos.SetWidths(New Single() {235.0F, 305.0F})
 
       Dim cellTituloPasos As New iTextSharp.text.pdf.PdfPCell(
     New iTextSharp.text.Phrase(
@@ -3044,41 +3051,87 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
 )
 
       cellTituloPasos.Border = iTextSharp.text.pdf.PdfPCell.NO_BORDER
+      cellTituloPasos.PaddingLeft = 0.0F
+      cellTituloPasos.PaddingRight = 5.0F
+      cellTituloPasos.PaddingTop = 0.0F
       cellTituloPasos.PaddingBottom = 7.0F
+      cellTituloPasos.VerticalAlignment =
+    iTextSharp.text.Element.ALIGN_MIDDLE
 
       tblTituloPasos.AddCell(cellTituloPasos)
+
+      Dim cellLineaPasos As New iTextSharp.text.pdf.PdfPCell(
+    New iTextSharp.text.Phrase("")
+)
+
+      cellLineaPasos.Border =
+    iTextSharp.text.pdf.PdfPCell.BOTTOM_BORDER
+
+      cellLineaPasos.BorderColorBottom = grisBorde
+      cellLineaPasos.BorderWidthBottom = 0.8F
+      cellLineaPasos.PaddingTop = 0.0F
+      cellLineaPasos.PaddingBottom = 7.0F
+
+      tblTituloPasos.AddCell(cellLineaPasos)
 
       documento.Add(tblTituloPasos)
 
 
-      ' Fuente específica para el texto de los pasos
-      Dim fPasoTexto As New iTextSharp.text.Font(
+      '-----------------------------------------------------------------------
+      ' ESPACIO ENTRE TÍTULO Y TARJETAS
+      '-----------------------------------------------------------------------
+      Dim pEspacioPasos As New iTextSharp.text.Paragraph(" ")
+      pEspacioPasos.Leading = 4.0F
+      documento.Add(pEspacioPasos)
+
+
+      '========================================================================
+      ' FUENTES
+      '========================================================================
+      Dim fNumeroPaso As New iTextSharp.text.Font(
     iTextSharp.text.Font.HELVETICA,
-    8.5F,
+    9.0F,
+    iTextSharp.text.Font.BOLD,
+    iTextSharp.text.Color.WHITE
+)
+
+      Dim fTextoPaso As New iTextSharp.text.Font(
+    iTextSharp.text.Font.HELVETICA,
+    7.7F,
     iTextSharp.text.Font.NORMAL,
+    grisTexto
+)
+
+      Dim fTextoPasoBold As New iTextSharp.text.Font(
+    iTextSharp.text.Font.HELVETICA,
+    7.7F,
+    iTextSharp.text.Font.BOLD,
     iTextSharp.text.Color.BLACK
 )
 
-      Dim fPasoNumero As New iTextSharp.text.Font(
+      Dim fTextoPasoBlue As New iTextSharp.text.Font(
     iTextSharp.text.Font.HELVETICA,
-    10.0F,
+    7.7F,
     iTextSharp.text.Font.BOLD,
-    azul
+    azulOscuro
 )
 
 
       '========================================================================
-      ' TABLA PRINCIPAL DE LOS 3 PASOS
+      ' TABLA GENERAL
+      ' Tarjeta | espacio | Tarjeta | espacio | Tarjeta
       '========================================================================
-      Dim tblPasos As New iTextSharp.text.pdf.PdfPTable(3)
+      Dim tblPasos As New iTextSharp.text.pdf.PdfPTable(5)
 
       tblPasos.TotalWidth = 540.0F
       tblPasos.LockedWidth = True
 
       tblPasos.SetWidths(
     New Single() {
-        180.0F,
-        180.0F,
+        170.0F,
+        10.0F,
+        170.0F,
+        10.0F,
         180.0F
     }
 )
@@ -3090,60 +3143,110 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       Dim tblPaso1 As New iTextSharp.text.pdf.PdfPTable(1)
       tblPaso1.WidthPercentage = 100
 
+      ' Número 1
+      Dim tblNumero1 As New iTextSharp.text.pdf.PdfPTable(3)
+      tblNumero1.WidthPercentage = 100
+      tblNumero1.SetWidths(New Single() {22.0F, 22.0F, 126.0F})
 
-      ' Número
+      Dim espacioNumero1Izq As New iTextSharp.text.pdf.PdfPCell(
+    New iTextSharp.text.Phrase("")
+)
+      espacioNumero1Izq.Border =
+    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+      tblNumero1.AddCell(espacioNumero1Izq)
+
       Dim cellNumero1 As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase(
-        "1",
-        fPasoNumero
-    )
+    New iTextSharp.text.Phrase("1", fNumeroPaso)
 )
 
+      cellNumero1.BackgroundColor = azulOscuro
       cellNumero1.Border =
     iTextSharp.text.pdf.PdfPCell.NO_BORDER
 
-      cellNumero1.PaddingLeft = 10.0F
-      cellNumero1.PaddingRight = 10.0F
-      cellNumero1.PaddingTop = 10.0F
-      cellNumero1.PaddingBottom = 9.0F
+      cellNumero1.HorizontalAlignment =
+    iTextSharp.text.Element.ALIGN_CENTER
 
-      tblPaso1.AddCell(cellNumero1)
+      cellNumero1.VerticalAlignment =
+    iTextSharp.text.Element.ALIGN_MIDDLE
+
+      cellNumero1.FixedHeight = 22.0F
+      cellNumero1.PaddingTop = 5.0F
+      cellNumero1.PaddingBottom = 4.0F
+
+      tblNumero1.AddCell(cellNumero1)
+
+      Dim espacioNumero1Der As New iTextSharp.text.pdf.PdfPCell(
+    New iTextSharp.text.Phrase("")
+)
+      espacioNumero1Der.Border =
+    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+      tblNumero1.AddCell(espacioNumero1Der)
+
+      Dim contNumero1 As New iTextSharp.text.pdf.PdfPCell(tblNumero1)
+      contNumero1.Border =
+    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+      contNumero1.PaddingTop = 9.0F
+      contNumero1.PaddingBottom = 6.0F
+
+      tblPaso1.AddCell(contNumero1)
 
 
-      ' Texto
-      Dim cellTexto1 As New iTextSharp.text.pdf.PdfPCell(
-          New iTextSharp.text.Phrase(
-              "Elija la tienda que más le convenga entre las cadenas indicadas " &
-              "(solo se puede pagar en esas tiendas).",
-              fPasoTexto
-          )
-      )
+      ' Texto paso 1
+      Dim frasePaso1 As New iTextSharp.text.Phrase()
 
-      cellTexto1.Border =
+      frasePaso1.Add(
+    New iTextSharp.text.Chunk(
+        "Elija la tienda ",
+        fTextoPasoBold
+    )
+)
+
+      frasePaso1.Add(
+    New iTextSharp.text.Chunk(
+        "que más le convenga entre las cadenas indicadas " &
+        "(solo se puede pagar en esas tiendas).",
+        fTextoPaso
+    )
+)
+
+      Dim pTextoPaso1 As New iTextSharp.text.Paragraph(frasePaso1)
+      pTextoPaso1.Leading = 13.0F
+      pTextoPaso1.SpacingBefore = 0.0F
+      pTextoPaso1.SpacingAfter = 0.0F
+
+      Dim cellTextoPaso1 As New iTextSharp.text.pdf.PdfPCell(pTextoPaso1)
+
+      cellTextoPaso1.Border =
     iTextSharp.text.pdf.PdfPCell.NO_BORDER
 
-      cellTexto1.PaddingLeft = 10.0F
-      cellTexto1.PaddingRight = 10.0F
-      cellTexto1.PaddingTop = 0.0F
-      cellTexto1.PaddingBottom = 10.0F
+      cellTextoPaso1.PaddingLeft = 10.0F
+      cellTextoPaso1.PaddingRight = 10.0F
+      cellTextoPaso1.PaddingTop = 0.0F
+      cellTextoPaso1.PaddingBottom = 12.0F
 
-      cellTexto1.VerticalAlignment =
-    iTextSharp.text.Element.ALIGN_TOP
+      tblPaso1.AddCell(cellTextoPaso1)
 
-      tblPaso1.AddCell(cellTexto1)
-
-
-      ' Contenedor
       Dim contPaso1 As New iTextSharp.text.pdf.PdfPCell(tblPaso1)
-
       contPaso1.BorderColor = grisBorde
       contPaso1.BorderWidth = 0.8F
       contPaso1.Padding = 0.0F
-      contPaso1.MinimumHeight = 62.0F
+      contPaso1.MinimumHeight = 105.0F
       contPaso1.VerticalAlignment =
     iTextSharp.text.Element.ALIGN_TOP
 
       tblPasos.AddCell(contPaso1)
+
+
+      '========================================================================
+      ' SEPARADOR 1
+      '========================================================================
+      Dim separador1 As New iTextSharp.text.pdf.PdfPCell(
+    New iTextSharp.text.Phrase("")
+)
+      separador1.Border =
+    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+
+      tblPasos.AddCell(separador1)
 
 
       '========================================================================
@@ -3152,60 +3255,130 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       Dim tblPaso2 As New iTextSharp.text.pdf.PdfPTable(1)
       tblPaso2.WidthPercentage = 100
 
+      ' Número 2
+      Dim tblNumero2 As New iTextSharp.text.pdf.PdfPTable(3)
+      tblNumero2.WidthPercentage = 100
+      tblNumero2.SetWidths(New Single() {22.0F, 22.0F, 126.0F})
 
-      ' Número
+      Dim espacioNumero2Izq As New iTextSharp.text.pdf.PdfPCell(
+    New iTextSharp.text.Phrase("")
+)
+      espacioNumero2Izq.Border =
+    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+      tblNumero2.AddCell(espacioNumero2Izq)
+
       Dim cellNumero2 As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase(
-        "2",
-        fPasoNumero
-    )
+    New iTextSharp.text.Phrase("2", fNumeroPaso)
 )
 
+      cellNumero2.BackgroundColor = azulOscuro
       cellNumero2.Border =
     iTextSharp.text.pdf.PdfPCell.NO_BORDER
 
-      cellNumero2.PaddingLeft = 10.0F
-      cellNumero2.PaddingRight = 10.0F
-      cellNumero2.PaddingTop = 10.0F
-      cellNumero2.PaddingBottom = 9.0F
+      cellNumero2.HorizontalAlignment =
+    iTextSharp.text.Element.ALIGN_CENTER
 
-      tblPaso2.AddCell(cellNumero2)
+      cellNumero2.VerticalAlignment =
+    iTextSharp.text.Element.ALIGN_MIDDLE
+
+      cellNumero2.FixedHeight = 22.0F
+      cellNumero2.PaddingTop = 5.0F
+      cellNumero2.PaddingBottom = 4.0F
+
+      tblNumero2.AddCell(cellNumero2)
+
+      Dim espacioNumero2Der As New iTextSharp.text.pdf.PdfPCell(
+    New iTextSharp.text.Phrase("")
+)
+      espacioNumero2Der.Border =
+    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+      tblNumero2.AddCell(espacioNumero2Der)
+
+      Dim contNumero2 As New iTextSharp.text.pdf.PdfPCell(tblNumero2)
+      contNumero2.Border =
+    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+      contNumero2.PaddingTop = 9.0F
+      contNumero2.PaddingBottom = 6.0F
+
+      tblPaso2.AddCell(contNumero2)
 
 
-      ' Texto
-      Dim cellTexto2 As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase(
-        "Al acercarse al mostrador, mencione que viene a pagar CONEKTA " &
-        "y muestre el código de barras o dicte los números de la referencia.",
-        fPasoTexto
+      ' Texto paso 2
+      Dim frasePaso2 As New iTextSharp.text.Phrase()
+
+      frasePaso2.Add(
+    New iTextSharp.text.Chunk(
+        "Al acercarse al mostrador, mencione que viene a pagar ",
+        fTextoPaso
     )
 )
 
-      cellTexto2.Border =
+      frasePaso2.Add(
+    New iTextSharp.text.Chunk(
+        "CONEKTA",
+        fTextoPasoBlue
+    )
+)
+
+      frasePaso2.Add(
+    New iTextSharp.text.Chunk(
+        " y ",
+        fTextoPaso
+    )
+)
+
+      frasePaso2.Add(
+    New iTextSharp.text.Chunk(
+        "muestre el código de barras",
+        fTextoPasoBold
+    )
+)
+
+      frasePaso2.Add(
+    New iTextSharp.text.Chunk(
+        " o dicte los números de la referencia.",
+        fTextoPaso
+    )
+)
+
+      Dim pTextoPaso2 As New iTextSharp.text.Paragraph(frasePaso2)
+      pTextoPaso2.Leading = 13.0F
+      pTextoPaso2.SpacingBefore = 0.0F
+      pTextoPaso2.SpacingAfter = 0.0F
+
+      Dim cellTextoPaso2 As New iTextSharp.text.pdf.PdfPCell(pTextoPaso2)
+
+      cellTextoPaso2.Border =
     iTextSharp.text.pdf.PdfPCell.NO_BORDER
 
-      cellTexto2.PaddingLeft = 10.0F
-      cellTexto2.PaddingRight = 10.0F
-      cellTexto2.PaddingTop = 0.0F
-      cellTexto2.PaddingBottom = 10.0F
+      cellTextoPaso2.PaddingLeft = 10.0F
+      cellTextoPaso2.PaddingRight = 10.0F
+      cellTextoPaso2.PaddingTop = 0.0F
+      cellTextoPaso2.PaddingBottom = 12.0F
 
-      cellTexto2.VerticalAlignment =
-    iTextSharp.text.Element.ALIGN_TOP
+      tblPaso2.AddCell(cellTextoPaso2)
 
-      tblPaso2.AddCell(cellTexto2)
-
-
-      ' Contenedor
       Dim contPaso2 As New iTextSharp.text.pdf.PdfPCell(tblPaso2)
-
       contPaso2.BorderColor = grisBorde
       contPaso2.BorderWidth = 0.8F
       contPaso2.Padding = 0.0F
-      contPaso2.MinimumHeight = 62.0F
+      contPaso2.MinimumHeight = 105.0F
       contPaso2.VerticalAlignment =
     iTextSharp.text.Element.ALIGN_TOP
 
       tblPasos.AddCell(contPaso2)
+
+
+      '========================================================================
+      ' SEPARADOR 2
+      '========================================================================
+      Dim separador2 As New iTextSharp.text.pdf.PdfPCell(
+    New iTextSharp.text.Phrase("")
+)
+      separador2.Border =
+    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+
+      tblPasos.AddCell(separador2)
 
 
       '========================================================================
@@ -3214,56 +3387,100 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       Dim tblPaso3 As New iTextSharp.text.pdf.PdfPTable(1)
       tblPaso3.WidthPercentage = 100
 
+      ' Número 3
+      Dim tblNumero3 As New iTextSharp.text.pdf.PdfPTable(3)
+      tblNumero3.WidthPercentage = 100
+      tblNumero3.SetWidths(New Single() {22.0F, 22.0F, 136.0F})
 
-      ' Número
+      Dim espacioNumero3Izq As New iTextSharp.text.pdf.PdfPCell(
+    New iTextSharp.text.Phrase("")
+)
+      espacioNumero3Izq.Border =
+    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+      tblNumero3.AddCell(espacioNumero3Izq)
+
       Dim cellNumero3 As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase(
-        "3",
-        fPasoNumero
-    )
+    New iTextSharp.text.Phrase("3", fNumeroPaso)
 )
 
+      cellNumero3.BackgroundColor = azulOscuro
       cellNumero3.Border =
     iTextSharp.text.pdf.PdfPCell.NO_BORDER
 
-      cellNumero3.PaddingLeft = 10.0F
-      cellNumero3.PaddingRight = 10.0F
-      cellNumero3.PaddingTop = 10.0F
-      cellNumero3.PaddingBottom = 9.0F
+      cellNumero3.HorizontalAlignment =
+    iTextSharp.text.Element.ALIGN_CENTER
 
-      tblPaso3.AddCell(cellNumero3)
+      cellNumero3.VerticalAlignment =
+    iTextSharp.text.Element.ALIGN_MIDDLE
+
+      cellNumero3.FixedHeight = 22.0F
+      cellNumero3.PaddingTop = 5.0F
+      cellNumero3.PaddingBottom = 4.0F
+
+      tblNumero3.AddCell(cellNumero3)
+
+      Dim espacioNumero3Der As New iTextSharp.text.pdf.PdfPCell(
+    New iTextSharp.text.Phrase("")
+)
+      espacioNumero3Der.Border =
+    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+      tblNumero3.AddCell(espacioNumero3Der)
+
+      Dim contNumero3 As New iTextSharp.text.pdf.PdfPCell(tblNumero3)
+      contNumero3.Border =
+    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+      contNumero3.PaddingTop = 9.0F
+      contNumero3.PaddingBottom = 6.0F
+
+      tblPaso3.AddCell(contNumero3)
 
 
-      ' Texto
-      Dim cellTexto3 As New iTextSharp.text.pdf.PdfPCell(
-        New iTextSharp.text.Phrase(
-            "Una vez realizado el pago en efectivo, recibirá una notificación " &
-            "de pago en tiempo real a su correo y ¡listo!",
-            fPasoTexto
-        )
+      ' Texto paso 3
+      Dim frasePaso3 As New iTextSharp.text.Phrase()
+
+      frasePaso3.Add(
+    New iTextSharp.text.Chunk(
+        "Una vez realizado el pago en efectivo, ",
+        fTextoPaso
     )
+)
 
-      cellTexto3.Border =
+      frasePaso3.Add(
+    New iTextSharp.text.Chunk(
+        "enviaremos una notificación de pago en tiempo real",
+        fTextoPasoBold
+    )
+)
+
+      frasePaso3.Add(
+    New iTextSharp.text.Chunk(
+        " a su correo y ¡listo!",
+        fTextoPaso
+    )
+)
+
+      Dim pTextoPaso3 As New iTextSharp.text.Paragraph(frasePaso3)
+      pTextoPaso3.Leading = 13.0F
+      pTextoPaso3.SpacingBefore = 0.0F
+      pTextoPaso3.SpacingAfter = 0.0F
+
+      Dim cellTextoPaso3 As New iTextSharp.text.pdf.PdfPCell(pTextoPaso3)
+
+      cellTextoPaso3.Border =
     iTextSharp.text.pdf.PdfPCell.NO_BORDER
 
-      cellTexto3.PaddingLeft = 10.0F
-      cellTexto3.PaddingRight = 10.0F
-      cellTexto3.PaddingTop = 0.0F
-      cellTexto3.PaddingBottom = 10.0F
+      cellTextoPaso3.PaddingLeft = 10.0F
+      cellTextoPaso3.PaddingRight = 10.0F
+      cellTextoPaso3.PaddingTop = 0.0F
+      cellTextoPaso3.PaddingBottom = 12.0F
 
-      cellTexto3.VerticalAlignment =
-    iTextSharp.text.Element.ALIGN_TOP
+      tblPaso3.AddCell(cellTextoPaso3)
 
-      tblPaso3.AddCell(cellTexto3)
-
-
-      ' Contenedor
       Dim contPaso3 As New iTextSharp.text.pdf.PdfPCell(tblPaso3)
-
       contPaso3.BorderColor = grisBorde
       contPaso3.BorderWidth = 0.8F
       contPaso3.Padding = 0.0F
-      contPaso3.MinimumHeight = 62.0F
+      contPaso3.MinimumHeight = 105.0F
       contPaso3.VerticalAlignment =
     iTextSharp.text.Element.ALIGN_TOP
 
@@ -3271,7 +3488,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
 
 
       '========================================================================
-      ' AGREGAR AL DOCUMENTO
+      ' AGREGAR SECCIÓN AL PDF
       '========================================================================
       documento.Add(tblPasos)
 
