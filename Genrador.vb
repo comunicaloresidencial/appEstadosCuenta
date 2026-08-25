@@ -2168,100 +2168,281 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       '========================================================================
       ' AVISO DE RECARGO
       '========================================================================
-      Dim tblAviso As New iTextSharp.text.pdf.PdfPTable(2)
+      '========================================================================
+      ' AVISO DE RECARGO DESPUÉS DE FECHA LÍMITE
+      '========================================================================
+
+      Dim tblAviso As New iTextSharp.text.pdf.PdfPTable(3)
+
       tblAviso.TotalWidth = 540.0F
       tblAviso.LockedWidth = True
-      tblAviso.SetWidths(New Single() {430.0F, 110.0F})
 
-      Dim tblAvisoIzq As New iTextSharp.text.pdf.PdfPTable(2)
-      tblAvisoIzq.WidthPercentage = 100
-      tblAvisoIzq.SetWidths(New Single() {38.0F, 392.0F})
+      ' Icono | Mensaje | Total después de fecha límite
+      tblAviso.SetWidths(
+    New Single() {
+        55.0F,
+        390.0F,
+        95.0F
+    }
+)
 
-      Dim iconoAviso As New iTextSharp.text.pdf.PdfPCell(
-      New iTextSharp.text.Phrase(
-        "!",
-        New iTextSharp.text.Font(
-          iTextSharp.text.Font.HELVETICA, 16.0F,
-          iTextSharp.text.Font.BOLD, iTextSharp.text.Color.WHITE)))
-      iconoAviso.BackgroundColor = amarillo
-      iconoAviso.Border = iTextSharp.text.pdf.PdfPCell.NO_BORDER
-      iconoAviso.HorizontalAlignment = iTextSharp.text.Element.ALIGN_CENTER
-      iconoAviso.VerticalAlignment = iTextSharp.text.Element.ALIGN_MIDDLE
-      iconoAviso.PaddingTop = 10.0F
-      iconoAviso.PaddingBottom = 10.0F
-      tblAvisoIzq.AddCell(iconoAviso)
 
-      Dim textoAviso As New iTextSharp.text.Phrase()
-      textoAviso.Add(New iTextSharp.text.Chunk(
-      "Si no paga antes del " & fechaLimite.ToString("dd/MM/yyyy") & ", ",
-      New iTextSharp.text.Font(
-        iTextSharp.text.Font.HELVETICA, 8.0F,
-        iTextSharp.text.Font.BOLD,
-        New iTextSharp.text.Color(125, 92, 18))))
-      textoAviso.Add(New iTextSharp.text.Chunk(
-      "se sumará un cargo por pago tardío de ",
-      f8Black))
-      textoAviso.Add(New iTextSharp.text.Chunk(
-      FormatCurrency(cargoPagoTardio, 2),
-      New iTextSharp.text.Font(
-        iTextSharp.text.Font.HELVETICA, 8.0F,
-        iTextSharp.text.Font.BOLD,
-        New iTextSharp.text.Color(125, 92, 18))))
-      textoAviso.Add(New iTextSharp.text.Chunk(
-      " y su servicio podrá ser suspendido.",
-      f8Black))
+      '========================================================================
+      ' 1. ICONO DE ALERTA
+      '========================================================================
+      Dim rutaIconoAlerta As String =
+    Application.StartupPath & "/imgs/icono-alerta.png"
 
-      Dim avisoTextoCell As New iTextSharp.text.pdf.PdfPCell(textoAviso)
-      avisoTextoCell.BackgroundColor = amarilloClaro
-      avisoTextoCell.Border = iTextSharp.text.pdf.PdfPCell.NO_BORDER
-      avisoTextoCell.VerticalAlignment = iTextSharp.text.Element.ALIGN_MIDDLE
-      avisoTextoCell.PaddingLeft = 12.0F
-      avisoTextoCell.PaddingRight = 8.0F
-      avisoTextoCell.PaddingTop = 10.0F
-      avisoTextoCell.PaddingBottom = 10.0F
-      tblAvisoIzq.AddCell(avisoTextoCell)
+      Dim cellIconoAlerta As iTextSharp.text.pdf.PdfPCell
 
-      Dim contAvisoIzq As New iTextSharp.text.pdf.PdfPCell(tblAvisoIzq)
-      contAvisoIzq.BackgroundColor = amarilloClaro
-      contAvisoIzq.BorderColor = New iTextSharp.text.Color(232, 220, 170)
-      contAvisoIzq.BorderWidth = 0.7F
-      contAvisoIzq.Padding = 0.0F
-      tblAviso.AddCell(contAvisoIzq)
+      If System.IO.File.Exists(rutaIconoAlerta) Then
 
-      Dim tblTotalDespues As New iTextSharp.text.pdf.PdfPTable(1)
-      tblTotalDespues.WidthPercentage = 100
+        Dim imgIconoAlerta As iTextSharp.text.Image =
+        iTextSharp.text.Image.GetInstance(rutaIconoAlerta)
 
-      Dim despuesImporte As New iTextSharp.text.pdf.PdfPCell(
-      New iTextSharp.text.Phrase(
+        ' Mantener proporción del icono
+        Dim anchoIcono As Single = 30.0F
+
+        Dim proporcionIcono As Single =
+        imgIconoAlerta.Height / imgIconoAlerta.Width
+
+        Dim altoIcono As Single =
+        anchoIcono * proporcionIcono
+
+        imgIconoAlerta.ScaleAbsolute(
+        anchoIcono,
+        altoIcono
+    )
+
+        imgIconoAlerta.Alignment =
+        iTextSharp.text.Element.ALIGN_CENTER
+
+        ' Pasamos la imagen directamente al PdfPCell.
+        ' Evitamos AddElement por los problemas que ya vimos.
+        cellIconoAlerta =
+        New iTextSharp.text.pdf.PdfPCell(
+            imgIconoAlerta,
+            False
+        )
+
+      Else
+
+        ' Fallback por si no encuentra la imagen
+        cellIconoAlerta =
+        New iTextSharp.text.pdf.PdfPCell(
+            New iTextSharp.text.Phrase(
+                "!",
+                New iTextSharp.text.Font(
+                    iTextSharp.text.Font.HELVETICA,
+                    16.0F,
+                    iTextSharp.text.Font.BOLD,
+                    iTextSharp.text.Color.WHITE
+                )
+            )
+        )
+
+      End If
+
+
+      cellIconoAlerta.BackgroundColor =
+    iTextSharp.text.Color.WHITE
+
+      cellIconoAlerta.Border =
+    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+
+      cellIconoAlerta.HorizontalAlignment =
+    iTextSharp.text.Element.ALIGN_CENTER
+
+      cellIconoAlerta.VerticalAlignment =
+    iTextSharp.text.Element.ALIGN_MIDDLE
+
+      cellIconoAlerta.PaddingLeft = 10.0F
+      cellIconoAlerta.PaddingRight = 10.0F
+      cellIconoAlerta.PaddingTop = 10.0F
+      cellIconoAlerta.PaddingBottom = 10.0F
+
+      tblAviso.AddCell(cellIconoAlerta)
+
+
+      '========================================================================
+      ' 2. TEXTO DEL AVISO
+      '========================================================================
+
+      Dim fAvisoNormal As New iTextSharp.text.Font(
+    iTextSharp.text.Font.HELVETICA,
+    7.5F,
+    iTextSharp.text.Font.NORMAL,
+    iTextSharp.text.Color.BLACK
+)
+
+      Dim fAvisoBold As New iTextSharp.text.Font(
+    iTextSharp.text.Font.HELVETICA,
+    7.5F,
+    iTextSharp.text.Font.BOLD,
+    New iTextSharp.text.Color(125, 92, 18)
+)
+
+
+      Dim fraseAviso As New iTextSharp.text.Phrase()
+
+      fraseAviso.Add(
+    New iTextSharp.text.Chunk(
+        "Si no paga antes del ",
+        fAvisoNormal
+    )
+)
+
+      fraseAviso.Add(
+    New iTextSharp.text.Chunk(
+        fechaLimite.ToString("dd/MM/yyyy"),
+        fAvisoBold
+    )
+)
+
+      fraseAviso.Add(
+    New iTextSharp.text.Chunk(
+        ", se sumará un cargo por pago tardío de ",
+        fAvisoNormal
+    )
+)
+
+      fraseAviso.Add(
+    New iTextSharp.text.Chunk(
+        FormatCurrency(cargoPagoTardio, 2),
+        fAvisoBold
+    )
+)
+
+      fraseAviso.Add(
+    New iTextSharp.text.Chunk(
+        " y su servicio podrá ser suspendido.",
+        fAvisoNormal
+    )
+)
+
+
+      Dim parrafoAviso As New iTextSharp.text.Paragraph(fraseAviso)
+
+      parrafoAviso.Leading = 11.0F
+      parrafoAviso.SpacingBefore = 0.0F
+      parrafoAviso.SpacingAfter = 0.0F
+
+
+      Dim cellTextoAviso As New iTextSharp.text.pdf.PdfPCell(
+    parrafoAviso
+)
+
+      cellTextoAviso.BackgroundColor =
+    amarilloClaro
+
+      cellTextoAviso.Border =
+    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+
+      cellTextoAviso.HorizontalAlignment =
+    iTextSharp.text.Element.ALIGN_LEFT
+
+      cellTextoAviso.VerticalAlignment =
+    iTextSharp.text.Element.ALIGN_MIDDLE
+
+      cellTextoAviso.PaddingLeft = 12.0F
+      cellTextoAviso.PaddingRight = 10.0F
+      cellTextoAviso.PaddingTop = 10.0F
+      cellTextoAviso.PaddingBottom = 10.0F
+
+      tblAviso.AddCell(cellTextoAviso)
+
+
+      '========================================================================
+      ' 3. TOTAL DESPUÉS DE LA FECHA LÍMITE
+      '========================================================================
+
+      Dim fraseTotalDespues As New iTextSharp.text.Phrase()
+
+      fraseTotalDespues.Add(
+    New iTextSharp.text.Chunk(
         FormatCurrency(totalDespuesFecha, 2),
-        f16BoldWhite))
-      despuesImporte.Border = iTextSharp.text.pdf.PdfPCell.NO_BORDER
-      despuesImporte.BackgroundColor = azul
-      despuesImporte.HorizontalAlignment = iTextSharp.text.Element.ALIGN_CENTER
-      despuesImporte.PaddingTop = 8.0F
-      despuesImporte.PaddingBottom = 0.0F
-      tblTotalDespues.AddCell(despuesImporte)
+        New iTextSharp.text.Font(
+            iTextSharp.text.Font.HELVETICA,
+            16.0F,
+            iTextSharp.text.Font.BOLD,
+            iTextSharp.text.Color.WHITE
+        )
+    )
+)
 
-      Dim despuesLeyenda As New iTextSharp.text.pdf.PdfPCell(
-      New iTextSharp.text.Phrase(
-        "TOTAL DESPUÉS" & Environment.NewLine &
+      fraseTotalDespues.Add(
+    New iTextSharp.text.Chunk(
+        Environment.NewLine &
+        "TOTAL DESPUÉS",
+        New iTextSharp.text.Font(
+            iTextSharp.text.Font.HELVETICA,
+            6.5F,
+            iTextSharp.text.Font.BOLD,
+            iTextSharp.text.Color.WHITE
+        )
+    )
+)
+
+      fraseTotalDespues.Add(
+    New iTextSharp.text.Chunk(
+        Environment.NewLine &
         "DEL " & fechaLimite.ToString("dd/MM/yyyy"),
         New iTextSharp.text.Font(
-          iTextSharp.text.Font.HELVETICA, 6.8F,
-          iTextSharp.text.Font.BOLD,
-          iTextSharp.text.Color.WHITE)))
-      despuesLeyenda.Border = iTextSharp.text.pdf.PdfPCell.NO_BORDER
-      despuesLeyenda.BackgroundColor = azul
-      despuesLeyenda.HorizontalAlignment = iTextSharp.text.Element.ALIGN_CENTER
-      despuesLeyenda.PaddingTop = 0.0F
-      despuesLeyenda.PaddingBottom = 8.0F
-      tblTotalDespues.AddCell(despuesLeyenda)
+            iTextSharp.text.Font.HELVETICA,
+            6.5F,
+            iTextSharp.text.Font.BOLD,
+            iTextSharp.text.Color.WHITE
+        )
+    )
+)
 
-      Dim contTotalDespues As New iTextSharp.text.pdf.PdfPCell(tblTotalDespues)
-      contTotalDespues.Border = iTextSharp.text.pdf.PdfPCell.NO_BORDER
-      contTotalDespues.BackgroundColor = azul
-      contTotalDespues.Padding = 0.0F
-      tblAviso.AddCell(contTotalDespues)
+
+      Dim parrafoTotalDespues As New iTextSharp.text.Paragraph(
+    fraseTotalDespues
+)
+
+      parrafoTotalDespues.Alignment =
+    iTextSharp.text.Element.ALIGN_CENTER
+
+      parrafoTotalDespues.Leading = 8.0F
+      parrafoTotalDespues.SpacingBefore = 0.0F
+      parrafoTotalDespues.SpacingAfter = 0.0F
+
+
+      Dim cellTotalDespues As New iTextSharp.text.pdf.PdfPCell(
+    parrafoTotalDespues
+)
+
+      cellTotalDespues.BackgroundColor =
+    azul
+
+      cellTotalDespues.Border =
+    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+
+      cellTotalDespues.HorizontalAlignment =
+    iTextSharp.text.Element.ALIGN_CENTER
+
+      cellTotalDespues.VerticalAlignment =
+    iTextSharp.text.Element.ALIGN_MIDDLE
+
+      cellTotalDespues.PaddingLeft = 5.0F
+      cellTotalDespues.PaddingRight = 5.0F
+      cellTotalDespues.PaddingTop = 8.0F
+      cellTotalDespues.PaddingBottom = 8.0F
+
+      tblAviso.AddCell(cellTotalDespues)
+
+
+      '========================================================================
+      ' AGREGAR AL DOCUMENTO
+      '========================================================================
+      'documento.Add(tblAviso)
+
+      ' Espacio después de la barra
+      Dim espacioDespuesAlerta As New iTextSharp.text.Paragraph(" ")
+      espacioDespuesAlerta.Leading = 7.0F
+
+      documento.Add(espacioDespuesAlerta)
 
       documento.Add(tblAviso)
       documento.Add(New iTextSharp.text.Paragraph(" ", f7))
@@ -2820,7 +3001,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       cellLateTitle.Border = iTextSharp.text.pdf.PdfPCell.NO_BORDER
       cellLateTitle.Padding = 9.0F
       tblLateTitle.AddCell(cellLateTitle)
-      documento.Add(tblLateTitle)
+      'documento.Add(tblLateTitle)
 
       Dim tblLateBody As New iTextSharp.text.pdf.PdfPTable(2)
       tblLateBody.TotalWidth = 540.0F
@@ -2872,8 +3053,46 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       cellLateAmount.AddElement(pLateText)
 
       tblLateBody.AddCell(cellLateAmount)
-      documento.Add(tblLateBody)
-      documento.Add(New iTextSharp.text.Paragraph(" ", f7))
+      'documento.Add(tblLateBody)
+      'documento.Add(New iTextSharp.text.Paragraph(" ", f7))
+
+      '========================================================================
+      ' IMPORTANTE - PAGO TARDÍO
+      '========================================================================
+      Dim rutaAvisoPago As String =
+    Application.StartupPath & "/imgs/aviso-pago.png"
+
+      If System.IO.File.Exists(rutaAvisoPago) Then
+
+        Dim imgAvisoPago As iTextSharp.text.Image =
+        iTextSharp.text.Image.GetInstance(rutaAvisoPago)
+
+        ' Ancho final dentro del PDF
+        Dim anchoAviso As Single = 540.0F
+
+        ' Mantener exactamente la relación de aspecto de la imagen
+        Dim proporcionAviso As Single =
+        imgAvisoPago.Height / imgAvisoPago.Width
+
+        Dim altoAviso As Single =
+        anchoAviso * proporcionAviso
+
+        imgAvisoPago.ScaleAbsolute(
+        anchoAviso,
+        altoAviso
+    )
+
+        imgAvisoPago.Alignment =
+        iTextSharp.text.Element.ALIGN_CENTER
+
+        documento.Add(imgAvisoPago)
+
+      End If
+
+      ' Espacio después del aviso
+      Dim espacioDespuesAviso As New iTextSharp.text.Paragraph(" ")
+      espacioDespuesAviso.Leading = 6.0F
+      documento.Add(espacioDespuesAviso)
 
       ' Código para pago en tiendas.
       Dim tblTiendas As New iTextSharp.text.pdf.PdfPTable(1)
@@ -3072,9 +3291,46 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       cellLineaPasos.PaddingTop = 0.0F
       cellLineaPasos.PaddingBottom = 7.0F
 
-      tblTituloPasos.AddCell(cellLineaPasos)
+      'tblTituloPasos.AddCell(cellLineaPasos)
 
-      documento.Add(tblTituloPasos)
+      'documento.Add(tblTituloPasos)
+
+      '========================================================================
+      ' INSTRUCCIONES PARA PAGO EN TIENDAS
+      '========================================================================
+      Dim rutaInstrucciones As String =
+    Application.StartupPath & "/imgs/instrucciones-pago.png"
+
+      If System.IO.File.Exists(rutaInstrucciones) Then
+
+        Dim imgInstrucciones As iTextSharp.text.Image =
+        iTextSharp.text.Image.GetInstance(rutaInstrucciones)
+
+        ' Ancho que queremos ocupar en el PDF
+        Dim anchoFinal As Single = 540.0F
+
+        ' Calcular altura manteniendo EXACTAMENTE la proporción original
+        Dim proporcion As Single =
+        imgInstrucciones.Height / imgInstrucciones.Width
+
+        Dim altoFinal As Single =
+        anchoFinal * proporcion
+
+        imgInstrucciones.ScaleAbsolute(
+        anchoFinal,
+        altoFinal
+    )
+
+        imgInstrucciones.Alignment =
+        iTextSharp.text.Element.ALIGN_CENTER
+
+        documento.Add(imgInstrucciones)
+
+      End If
+
+      documento.Add(
+    New iTextSharp.text.Paragraph(" ", f7)
+)
 
 
       '-----------------------------------------------------------------------
@@ -3490,7 +3746,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       '========================================================================
       ' AGREGAR SECCIÓN AL PDF
       '========================================================================
-      documento.Add(tblPasos)
+      'documento.Add(tblPasos)
 
       AgregarFooter(
       documento, logo2, grisBorde, f7, "PÁGINA 2 DE 2"
