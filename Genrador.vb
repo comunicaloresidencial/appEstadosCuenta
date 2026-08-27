@@ -1399,360 +1399,6 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
 
   End Sub
 
-  Private Sub Generar_pdfOXXO_v2_2(ByVal id_estado_cuenta As Integer,
-                                  ByVal id_contrato As Integer,
-                                  ByVal path As String,
-                                  ByVal refOxxo As String,
-                                  ByVal codigoBarraOxxo As String)
-
-    ' Datos dummy. Sustituir después por datos de BD.
-    Dim mesFacturacion As String = "OCTUBRE"
-    Dim contrato As String = "06155"
-    Dim telefono As String = "7791425119"
-    Dim totalPagar As Decimal = 750D
-    Dim saldoVencido As Decimal = 400D
-    Dim cargoPagoTardio As Decimal = 50D
-    Dim totalDespuesFecha As Decimal = 800D
-    Dim fechaLimite As New Date(2023, 10, 12)
-    Dim clabe As String = "646180558500043128"
-    Dim banco As String = "STP"
-    Dim beneficiario As String = "Comunícalo de México, S.A. de C.V."
-    Dim nombreCliente As String = "MARGARITA DEL CARMEN BARROSO GONZALES"
-    Dim direccionCliente1 As String = "PRIV. VILAFRANCA 112 4-B, BOSQUES DE IBIZA"
-    Dim direccionCliente2 As String = "TIZAYUCA, HIDALGO, C.P. 43815"
-    Dim planActual As String = "PLAN COMUNICALO D30"
-    Dim conceptoActual As String = "Servicio Telefonía Ilimitada + Servicio Internet 30 Mbps"
-    Dim importeActual As Decimal = 350D
-    Dim mesAnterior As String = "SEPTIEMBRE"
-    Dim conceptoMesAnterior As String = "Mensualidad Septiembre — no pagada"
-    Dim importeMesAnterior As Decimal = 350D
-
-    If String.IsNullOrWhiteSpace(refOxxo) Then refOxxo = "1010102677978684"
-
-    Dim ruta As String = System.IO.Path.Combine(path, "EstadoCuentaV2(" & id_estado_cuenta.ToString() & ").pdf")
-
-    Dim azul As New Color(20, 67, 126)
-    Dim azulOscuro As New Color(14, 47, 94)
-    Dim azulClaro As New Color(239, 244, 250)
-    Dim grisClaro As New Color(246, 247, 249)
-    Dim grisBorde As New Color(218, 222, 228)
-    Dim grisTexto As New Color(90, 96, 105)
-    Dim amarilloClaro As New Color(252, 247, 226)
-    Dim amarillo As New Color(190, 144, 37)
-
-    Dim f7 As New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 7.0F, iTextSharp.text.Font.NORMAL, grisTexto)
-    Dim f7b As New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 7.0F, iTextSharp.text.Font.BOLD, Color.BLACK)
-    Dim f8 As New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 8.0F, iTextSharp.text.Font.NORMAL, grisTexto)
-    Dim f8k As New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 8.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)
-    Dim f8b As New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 8.0F, iTextSharp.text.Font.BOLD, azulOscuro)
-    Dim f8bw As New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 8.0F, iTextSharp.text.Font.BOLD, Color.WHITE)
-    Dim f9b As New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 9.0F, iTextSharp.text.Font.BOLD, Color.BLACK)
-    Dim f10b As New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.BOLD, azulOscuro)
-    Dim f10bw As New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.BOLD, Color.WHITE)
-    Dim f12bw As New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 12.0F, iTextSharp.text.Font.BOLD, Color.WHITE)
-    Dim f13b As New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 13.0F, iTextSharp.text.Font.BOLD, azulOscuro)
-    Dim f16bw As New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 16.0F, iTextSharp.text.Font.BOLD, Color.WHITE)
-    Dim f18b As New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 18.0F, iTextSharp.text.Font.BOLD, azulOscuro)
-    Dim f20bw As New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 20.0F, iTextSharp.text.Font.BOLD, Color.WHITE)
-
-    Dim oDoc As New Document(PageSize.LETTER, 36, 36, 28, 28)
-    Dim pdfw As PdfWriter = Nothing
-
-    Try
-      pdfw = PdfWriter.GetInstance(oDoc, New FileStream(ruta, FileMode.Create, FileAccess.Write, FileShare.None))
-      Me.PageState = New CustomPageState()
-      pdfw.PageEvent = New MyCustomPdfEvent(Me.PageState)
-      oDoc.Open()
-
-      '======================== PÁGINA 1 ========================
-      Dim header As New PdfPTable(2)
-      header.TotalWidth = 540.0F : header.LockedWidth = True
-      header.SetWidths(New Single() {220.0F, 320.0F})
-
-      Dim logo As iTextSharp.text.Image = iTextSharp.text.Image.GetInstance(Application.StartupPath & "/imgs/LOGOCOMUNICALO.png")
-      logo.ScaleToFit(170.0F, 70.0F)
-      Dim cLogo As New PdfPCell(logo)
-      cLogo.Border = PdfPCell.NO_BORDER : cLogo.PaddingBottom = 8.0F
-      header.AddCell(cLogo)
-
-      Dim title As New PdfPTable(1)
-      title.WidthPercentage = 100
-      Dim ct As New PdfPCell(New Phrase("ESTADO DE CUENTA", f18b))
-      ct.Border = PdfPCell.NO_BORDER : ct.HorizontalAlignment = Element.ALIGN_RIGHT
-      title.AddCell(ct)
-      Dim subPh As New Phrase()
-      subPh.Add(New Chunk("Mes de facturación: ", f8))
-      subPh.Add(New Chunk(mesFacturacion, f8b))
-      subPh.Add(New Chunk("  ·  Contrato: ", f8))
-      subPh.Add(New Chunk(contrato, f8b))
-      Dim cs As New PdfPCell(subPh)
-      cs.Border = PdfPCell.NO_BORDER : cs.HorizontalAlignment = Element.ALIGN_RIGHT
-      title.AddCell(cs)
-      Dim cTitle As New PdfPCell(title)
-      cTitle.Border = PdfPCell.NO_BORDER : cTitle.VerticalAlignment = Element.ALIGN_MIDDLE
-      header.AddCell(cTitle)
-
-      Dim hLine As New PdfPCell(New Phrase(""))
-      hLine.Colspan = 2 : hLine.Border = PdfPCell.BOTTOM_BORDER
-      hLine.BorderColorBottom = azulOscuro : hLine.BorderWidthBottom = 2.2F
-      header.AddCell(hLine)
-      oDoc.Add(header)
-      oDoc.Add(New Paragraph(" ", f7))
-
-      Dim summary As New PdfPTable(3)
-      summary.TotalWidth = 540.0F : summary.LockedWidth = True
-      summary.SetWidths(New Single() {210.0F, 185.0F, 145.0F})
-
-      Dim cTotal As New PdfPCell()
-      cTotal.BackgroundColor = azul : cTotal.Border = PdfPCell.NO_BORDER : cTotal.Padding = 11.0F
-      cTotal.AddElement(New Phrase("TOTAL A PAGAR", f8bw))
-      cTotal.AddElement(New Phrase(FormatCurrency(totalPagar, 2), f20bw))
-      cTotal.AddElement(New Phrase("Incluye cargos del mes y saldo anterior acumulado", New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 7.0F, iTextSharp.text.Font.NORMAL, Color.WHITE)))
-      summary.AddCell(cTotal)
-
-      Dim cFecha As New PdfPCell()
-      cFecha.BackgroundColor = grisClaro : cFecha.Border = PdfPCell.NO_BORDER : cFecha.Padding = 11.0F
-      cFecha.AddElement(New Phrase("FECHA LÍMITE DE PAGO", New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 8.0F, iTextSharp.text.Font.BOLD, amarillo)))
-      cFecha.AddElement(New Phrase(fechaLimite.ToString("dd / MMM / yyyy").ToUpper(), f13b))
-      cFecha.AddElement(New Phrase("Pague a tiempo y evite recargos", f7))
-      summary.AddCell(cFecha)
-
-      Dim cSaldo As New PdfPCell()
-      cSaldo.BackgroundColor = azulOscuro : cSaldo.Border = PdfPCell.NO_BORDER : cSaldo.Padding = 11.0F
-      cSaldo.AddElement(New Phrase("SALDO VENCIDO", f8bw))
-      cSaldo.AddElement(New Phrase(FormatCurrency(saldoVencido, 2), f16bw))
-      cSaldo.AddElement(New Phrase("REQUIERE PAGO INMEDIATO", New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 7.0F, iTextSharp.text.Font.BOLD, New Color(255, 218, 95))))
-      summary.AddCell(cSaldo)
-      oDoc.Add(summary)
-      oDoc.Add(New Paragraph(" ", f7))
-
-      Dim warning As New PdfPTable(2)
-      warning.TotalWidth = 540.0F : warning.LockedWidth = True
-      warning.SetWidths(New Single() {430.0F, 110.0F})
-      Dim warningText As New PdfPCell(New Phrase("Si no paga antes del " & fechaLimite.ToString("dd/MM/yyyy") & ", se sumará un cargo por pago tardío de " & FormatCurrency(cargoPagoTardio, 2) & " y su servicio podrá ser suspendido.", f8k))
-      warningText.BackgroundColor = amarilloClaro : warningText.BorderColor = New Color(232, 220, 170) : warningText.Padding = 12.0F
-      warning.AddCell(warningText)
-      Dim warningAmount As New PdfPCell()
-      warningAmount.BackgroundColor = azul : warningAmount.Border = PdfPCell.NO_BORDER : warningAmount.Padding = 8.0F
-      warningAmount.AddElement(New Paragraph(FormatCurrency(totalDespuesFecha, 2), f16bw) With {.Alignment = Element.ALIGN_CENTER})
-      warningAmount.AddElement(New Paragraph("TOTAL DESPUÉS" & Environment.NewLine & "DEL " & fechaLimite.ToString("dd/MM/yyyy"), New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 6.8F, iTextSharp.text.Font.BOLD, Color.WHITE)) With {.Alignment = Element.ALIGN_CENTER})
-      warning.AddCell(warningAmount)
-      oDoc.Add(warning)
-      oDoc.Add(New Paragraph(" ", f7))
-
-      Dim clabeTable As New PdfPTable(3)
-      clabeTable.TotalWidth = 540.0F : clabeTable.LockedWidth = True
-      clabeTable.SetWidths(New Single() {105.0F, 280.0F, 155.0F})
-      Dim clabeLabel As New PdfPCell(New Phrase("CLABE" & Environment.NewLine & "INTERBANCARIA" & Environment.NewLine & "PERSONALIZADA", f8bw))
-      clabeLabel.BackgroundColor = azul : clabeLabel.BorderColor = azulOscuro : clabeLabel.Padding = 9.0F : clabeLabel.HorizontalAlignment = Element.ALIGN_CENTER
-      clabeTable.AddCell(clabeLabel)
-      Dim clabeValue As New PdfPCell()
-      clabeValue.BackgroundColor = azulClaro : clabeValue.BorderColor = azulOscuro : clabeValue.Padding = 9.0F
-      clabeValue.AddElement(New Phrase("6461 8055 8500 04 3128", New iTextSharp.text.Font(iTextSharp.text.Font.COURIER, 18.0F, iTextSharp.text.Font.BOLD, azulOscuro)))
-      clabeValue.AddElement(New Phrase("Esta CLABE es exclusiva de su contrato: su pago se aplica automáticamente, sin referencia adicional.", f7))
-      clabeTable.AddCell(clabeValue)
-      Dim bankValue As New PdfPCell()
-      bankValue.BackgroundColor = azulClaro : bankValue.BorderColor = azulOscuro : bankValue.Padding = 8.0F
-      bankValue.AddElement(New Paragraph("Banco: " & banco, f7b) With {.Alignment = Element.ALIGN_RIGHT})
-      bankValue.AddElement(New Paragraph("Beneficiario: " & beneficiario, f7) With {.Alignment = Element.ALIGN_RIGHT})
-      clabeTable.AddCell(bankValue)
-      oDoc.Add(clabeTable)
-      oDoc.Add(New Paragraph(" ", f7))
-
-      Dim info As New PdfPTable(2)
-      info.TotalWidth = 540.0F : info.LockedWidth = True
-      info.SetWidths(New Single() {270.0F, 270.0F})
-      Dim emisor As New PdfPCell()
-      emisor.BorderColor = grisBorde : emisor.Padding = 9.0F
-      emisor.AddElement(New Phrase("EMISOR", f8b))
-      emisor.AddElement(New Phrase("Comunícalo de México S.A. de C.V.", f9b))
-      emisor.AddElement(New Phrase("Convento de Churubusco No. 4," & Environment.NewLine & "Col. Jardines de Santa Mónica" & Environment.NewLine & "Mpio. Tlalnepantla de Baz, Estado de México, C.P. 54050" & Environment.NewLine & "RFC: CME0806162SA", f8))
-      info.AddCell(emisor)
-      Dim cliente As New PdfPCell()
-      cliente.BorderColor = grisBorde : cliente.Padding = 9.0F
-      cliente.AddElement(New Phrase("CLIENTE", f8b))
-      cliente.AddElement(New Phrase(nombreCliente, f9b))
-      cliente.AddElement(New Phrase(direccionCliente1 & Environment.NewLine & direccionCliente2 & Environment.NewLine & Environment.NewLine & "Contrato   " & contrato & Environment.NewLine & "Teléfono   " & telefono, f8))
-      info.AddCell(cliente)
-      oDoc.Add(info)
-      oDoc.Add(New Paragraph(" ", f7))
-
-      Dim sec As New PdfPTable(1)
-      sec.TotalWidth = 540.0F : sec.LockedWidth = True
-      Dim secCell As New PdfPCell(New Phrase("SERVICIOS CONTRATADOS · DESGLOSE DE CARGOS", f10b))
-      secCell.Border = PdfPCell.BOTTOM_BORDER : secCell.BorderColorBottom = grisBorde : secCell.PaddingBottom = 5.0F
-      sec.AddCell(secCell)
-      oDoc.Add(sec)
-
-      Dim charges As New PdfPTable(3)
-      charges.TotalWidth = 540.0F : charges.LockedWidth = True
-      charges.SetWidths(New Single() {130.0F, 325.0F, 85.0F})
-      Dim hp As New PdfPCell(New Phrase("PLAN", f7b)) : hp.BackgroundColor = grisClaro : hp.BorderColor = grisBorde : hp.Padding = 6.0F : charges.AddCell(hp)
-      Dim hc As New PdfPCell(New Phrase("CONCEPTO", f7b)) : hc.BackgroundColor = grisClaro : hc.BorderColor = grisBorde : hc.Padding = 6.0F : charges.AddCell(hc)
-      Dim hi As New PdfPCell(New Phrase("IMPORTE", f7b)) : hi.BackgroundColor = grisClaro : hi.BorderColor = grisBorde : hi.Padding = 6.0F : hi.HorizontalAlignment = Element.ALIGN_RIGHT : charges.AddCell(hi)
-
-      Dim mh As New PdfPCell(New Phrase("CARGOS DEL MES · " & mesFacturacion, f8b))
-      mh.Colspan = 3 : mh.BackgroundColor = azulClaro : mh.BorderColor = grisBorde : mh.Padding = 6.0F : charges.AddCell(mh)
-      Dim p1 As New PdfPCell(New Phrase(planActual, f8k)) : p1.BorderColor = grisBorde : p1.Padding = 7.0F : charges.AddCell(p1)
-      Dim c1 As New PdfPCell(New Phrase(conceptoActual, f8k)) : c1.BorderColor = grisBorde : c1.Padding = 7.0F : charges.AddCell(c1)
-      Dim i1 As New PdfPCell(New Phrase(FormatCurrency(importeActual, 2), f8k)) : i1.BorderColor = grisBorde : i1.Padding = 7.0F : i1.HorizontalAlignment = Element.ALIGN_RIGHT : charges.AddCell(i1)
-      Dim s1 As New PdfPCell(New Phrase("Subtotal cargos del mes", f7)) : s1.Colspan = 2 : s1.BackgroundColor = grisClaro : s1.BorderColor = grisBorde : s1.Padding = 5.0F : charges.AddCell(s1)
-      Dim s1a As New PdfPCell(New Phrase(FormatCurrency(importeActual, 2), f7)) : s1a.BackgroundColor = grisClaro : s1a.BorderColor = grisBorde : s1a.Padding = 5.0F : s1a.HorizontalAlignment = Element.ALIGN_RIGHT : charges.AddCell(s1a)
-
-      Dim prev As New PdfPCell(New Phrase("CARGOS DEL MES ANTERIOR · " & mesAnterior & " (SALDO VENCIDO)", New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 8.0F, iTextSharp.text.Font.BOLD, New Color(125, 92, 18))))
-      prev.Colspan = 3 : prev.BackgroundColor = amarilloClaro : prev.BorderColor = grisBorde : prev.Padding = 6.0F : charges.AddCell(prev)
-      Dim p2 As New PdfPCell(New Phrase(planActual, f8k)) : p2.BorderColor = grisBorde : p2.Padding = 7.0F : charges.AddCell(p2)
-      Dim c2 As New PdfPCell(New Phrase(conceptoMesAnterior, f8k)) : c2.BorderColor = grisBorde : c2.Padding = 7.0F : charges.AddCell(c2)
-      Dim i2 As New PdfPCell(New Phrase(FormatCurrency(importeMesAnterior, 2), f8k)) : i2.BorderColor = grisBorde : i2.Padding = 7.0F : i2.HorizontalAlignment = Element.ALIGN_RIGHT : charges.AddCell(i2)
-      Dim pc As New PdfPCell(New Phrase("COMISIÓN", New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 8.0F, iTextSharp.text.Font.BOLD, New Color(125, 92, 18)))) : pc.BorderColor = grisBorde : pc.Padding = 7.0F : charges.AddCell(pc)
-      Dim cc As New PdfPCell(New Phrase("Cargo administrativo por pago tardío", f8k)) : cc.BorderColor = grisBorde : cc.Padding = 7.0F : charges.AddCell(cc)
-      Dim ci As New PdfPCell(New Phrase(FormatCurrency(cargoPagoTardio, 2), f8k)) : ci.BorderColor = grisBorde : ci.Padding = 7.0F : ci.HorizontalAlignment = Element.ALIGN_RIGHT : charges.AddCell(ci)
-      Dim sp As New PdfPCell(New Phrase("Subtotal mes anterior", f7)) : sp.Colspan = 2 : sp.BackgroundColor = grisClaro : sp.BorderColor = grisBorde : sp.Padding = 5.0F : charges.AddCell(sp)
-      Dim spa As New PdfPCell(New Phrase(FormatCurrency(saldoVencido, 2), f7)) : spa.BackgroundColor = grisClaro : spa.BorderColor = grisBorde : spa.Padding = 5.0F : spa.HorizontalAlignment = Element.ALIGN_RIGHT : charges.AddCell(spa)
-
-      Dim totalLbl As New PdfPCell()
-      totalLbl.Colspan = 2 : totalLbl.BackgroundColor = azul : totalLbl.Border = PdfPCell.NO_BORDER : totalLbl.Padding = 8.0F
-      totalLbl.AddElement(New Phrase("TOTAL A PAGAR", f10bw))
-      totalLbl.AddElement(New Phrase("Acumulado: cargos del mes + saldo anterior", New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 6.8F, iTextSharp.text.Font.NORMAL, Color.WHITE)))
-      charges.AddCell(totalLbl)
-      Dim totalAmt As New PdfPCell(New Phrase(FormatCurrency(totalPagar, 2), f12bw))
-      totalAmt.BackgroundColor = azul : totalAmt.Border = PdfPCell.NO_BORDER : totalAmt.Padding = 9.0F : totalAmt.HorizontalAlignment = Element.ALIGN_RIGHT
-      charges.AddCell(totalAmt)
-      oDoc.Add(charges)
-
-      Dim terms As New PdfPTable(1)
-      terms.TotalWidth = 540.0F : terms.LockedWidth = True
-      Dim termsCell As New PdfPCell(New Phrase("* En el caso de haber realizado un cambio o actualización en su paquete, al realizar el pago de este Estado de Cuenta, usted acepta los nuevos Términos y Condiciones aplicables.", f7))
-      termsCell.BackgroundColor = grisClaro : termsCell.Border = PdfPCell.NO_BORDER : termsCell.Padding = 8.0F
-      terms.AddCell(termsCell)
-      oDoc.Add(terms)
-
-      oDoc.Add(New Paragraph(" ", f7))
-      Dim footer1 As New PdfPTable(2)
-      footer1.TotalWidth = 540.0F : footer1.LockedWidth = True
-      footer1.SetWidths(New Single() {390.0F, 150.0F})
-      Dim fc1 As New PdfPCell(New Phrase("soporte_residencial@comunicalo.mx  ·  Atención a clientes: 55 2601 4010" & Environment.NewLine & "Horario de atención de 9 a 18 hrs", f7))
-      fc1.Border = PdfPCell.TOP_BORDER : fc1.BorderColorTop = grisBorde : fc1.PaddingTop = 8.0F : footer1.AddCell(fc1)
-      Dim fl1 As New PdfPCell()
-      fl1.Border = PdfPCell.TOP_BORDER : fl1.BorderColorTop = grisBorde : fl1.PaddingTop = 6.0F
-      Dim logoF1 As Image = Image.GetInstance(Application.StartupPath & "/imgs/LOGOCOMUNICALO.png")
-      logoF1.ScaleToFit(95.0F, 35.0F) : fl1.AddElement(logoF1) : footer1.AddCell(fl1)
-      oDoc.Add(footer1)
-      Dim pg1 As New Paragraph("PÁGINA 1 DE 2", f7) : pg1.Alignment = Element.ALIGN_CENTER : oDoc.Add(pg1)
-
-      '======================== PÁGINA 2 ========================
-      oDoc.NewPage()
-      Dim header2 As New PdfPTable(2)
-      header2.TotalWidth = 540.0F : header2.LockedWidth = True
-      header2.SetWidths(New Single() {220.0F, 320.0F})
-      Dim logo2 As iTextSharp.text.Image = iTextSharp.text.Image.GetInstance(Application.StartupPath & "/imgs/LOGOCOMUNICALO.png")
-      logo2.ScaleToFit(130.0F, 50.0F)
-      Dim cl2 As New PdfPCell(logo2) : cl2.Border = PdfPCell.NO_BORDER : header2.AddCell(cl2)
-      Dim h2r As New PdfPTable(1)
-      Dim h2t As New PdfPCell(New Phrase("FORMAS DE PAGO", f13b)) : h2t.Border = PdfPCell.NO_BORDER : h2t.HorizontalAlignment = Element.ALIGN_RIGHT : h2r.AddCell(h2t)
-      Dim h2s As New PdfPCell(New Phrase("Contrato: " & contrato & " · " & mesFacturacion, f8)) : h2s.Border = PdfPCell.NO_BORDER : h2s.HorizontalAlignment = Element.ALIGN_RIGHT : h2r.AddCell(h2s)
-      Dim ch2 As New PdfPCell(h2r) : ch2.Border = PdfPCell.NO_BORDER : header2.AddCell(ch2)
-      Dim hl2 As New PdfPCell(New Phrase("")) : hl2.Colspan = 2 : hl2.Border = PdfPCell.BOTTOM_BORDER : hl2.BorderColorBottom = azulOscuro : hl2.BorderWidthBottom = 2.2F : header2.AddCell(hl2)
-      oDoc.Add(header2)
-      oDoc.Add(New Paragraph(" ", f7))
-
-      Dim lateTitle As New PdfPTable(1)
-      lateTitle.TotalWidth = 540.0F : lateTitle.LockedWidth = True
-      Dim ltc As New PdfPCell(New Phrase("IMPORTANTE — PAGO TARDÍO", f10bw))
-      ltc.BackgroundColor = azul : ltc.Border = PdfPCell.NO_BORDER : ltc.Padding = 9.0F : lateTitle.AddCell(ltc)
-      oDoc.Add(lateTitle)
-
-      Dim lateBody As New PdfPTable(2)
-      lateBody.TotalWidth = 540.0F : lateBody.LockedWidth = True
-      lateBody.SetWidths(New Single() {435.0F, 105.0F})
-      Dim lbt As New PdfPCell(New Phrase("A partir del mes de AGOSTO DE 2026, los pagos realizados después de la fecha límite establecida generarán un cargo administrativo por pago tardío de " & FormatCurrency(cargoPagoTardio, 2) & " (Cincuenta pesos 00/100 M.N.), el cual se aplicará de forma inmediata." & Environment.NewLine & Environment.NewLine & "En caso de suspensión del servicio por falta de pago, este cargo deberá liquidarse junto con la mensualidad vencida para la reactivación del servicio. Le invitamos a pagar dentro de la fecha establecida para evitar cargos adicionales.", f8k))
-      lbt.BackgroundColor = amarilloClaro : lbt.BorderColor = New Color(232, 220, 170) : lbt.Padding = 11.0F : lateBody.AddCell(lbt)
-      Dim lba As New PdfPCell()
-      lba.BackgroundColor = amarilloClaro : lba.BorderColor = New Color(232, 220, 170) : lba.Padding = 12.0F
-      lba.AddElement(New Paragraph(FormatCurrency(cargoPagoTardio, 2), New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 18.0F, iTextSharp.text.Font.BOLD, New Color(125, 92, 18))) With {.Alignment = Element.ALIGN_CENTER})
-      lba.AddElement(New Paragraph("CARGO POR" & Environment.NewLine & "PAGO TARDÍO", New iTextSharp.text.Font(iTextSharp.text.Font.HELVETICA, 7.0F, iTextSharp.text.Font.BOLD, New Color(125, 92, 18))) With {.Alignment = Element.ALIGN_CENTER})
-      lateBody.AddCell(lba)
-      oDoc.Add(lateBody)
-      oDoc.Add(New Paragraph(" ", f7))
-
-      Dim storeBox As New PdfPTable(1)
-      storeBox.TotalWidth = 540.0F : storeBox.LockedWidth = True
-      Dim st As New PdfPCell(New Phrase("CÓDIGO PARA PAGO EN TIENDAS", f10b))
-      st.BorderColor = grisBorde : st.HorizontalAlignment = Element.ALIGN_CENTER : st.Padding = 8.0F : storeBox.AddCell(st)
-      Dim si As New PdfPCell()
-      si.BorderColor = grisBorde : si.HorizontalAlignment = Element.ALIGN_CENTER : si.Padding = 8.0F
-      Dim stores As iTextSharp.text.Image = iTextSharp.text.Image.GetInstance(Application.StartupPath & "/imgs/stores_3.jpg")
-      stores.ScaleToFit(370.0F, 90.0F) : stores.Alignment = Element.ALIGN_CENTER : si.AddElement(stores)
-      storeBox.AddCell(si)
-      Dim bc As New PdfPCell()
-      bc.BorderColor = grisBorde : bc.HorizontalAlignment = Element.ALIGN_CENTER : bc.Padding = 10.0F
-      If Not String.IsNullOrWhiteSpace(codigoBarraOxxo) Then
-        ServicePointManager.SecurityProtocol = DirectCast(3072, SecurityProtocolType)
-        Dim barcode As Image = Image.GetInstance(codigoBarraOxxo)
-        barcode.ScaleToFit(185.0F, 80.0F) : barcode.Alignment = Element.ALIGN_CENTER : bc.AddElement(barcode)
-      End If
-      bc.AddElement(New Paragraph(refOxxo, New iTextSharp.text.Font(iTextSharp.text.Font.COURIER, 12.0F, iTextSharp.text.Font.BOLD, Color.BLACK)) With {.Alignment = Element.ALIGN_CENTER})
-      bc.AddElement(New Paragraph("Muestre este código de barras en caja o dicte los dígitos de la referencia.", f7) With {.Alignment = Element.ALIGN_CENTER})
-      storeBox.AddCell(bc)
-      oDoc.Add(storeBox)
-      oDoc.Add(New Paragraph(" ", f7))
-
-      Dim instTitle As New Paragraph("INSTRUCCIONES PARA PAGO EN TIENDAS", f10b)
-      oDoc.Add(instTitle)
-      oDoc.Add(New Paragraph(" ", f7))
-      Dim steps As New PdfPTable(3)
-      steps.TotalWidth = 540.0F : steps.LockedWidth = True
-      steps.SetWidths(New Single() {180.0F, 180.0F, 180.0F})
-      Dim sA As New PdfPCell(New Phrase("1" & Environment.NewLine & Environment.NewLine & "Elija la tienda que más le convenga entre las cadenas indicadas (solo se puede pagar en esas tiendas).", f8k))
-      sA.BorderColor = grisBorde : sA.Padding = 10.0F : sA.MinimumHeight = 92.0F : steps.AddCell(sA)
-      Dim sB As New PdfPCell(New Phrase("2" & Environment.NewLine & Environment.NewLine & "Al acercarse al mostrador, mencione que viene a pagar CONEKTA y muestre el código de barras o dicte los números de la referencia.", f8k))
-      sB.BorderColor = grisBorde : sB.Padding = 10.0F : sB.MinimumHeight = 92.0F : steps.AddCell(sB)
-      Dim sC As New PdfPCell(New Phrase("3" & Environment.NewLine & Environment.NewLine & "Una vez realizado el pago en efectivo, enviaremos una notificación de pago en tiempo real a su correo y ¡listo!", f8k))
-      sC.BorderColor = grisBorde : sC.Padding = 10.0F : sC.MinimumHeight = 92.0F : steps.AddCell(sC)
-      oDoc.Add(steps)
-
-      oDoc.Add(New Paragraph(Environment.NewLine & Environment.NewLine & Environment.NewLine, f7))
-      Dim footer2 As New PdfPTable(2)
-      footer2.TotalWidth = 540.0F : footer2.LockedWidth = True
-      footer2.SetWidths(New Single() {390.0F, 150.0F})
-      Dim fc2 As New PdfPCell(New Phrase("soporte_residencial@comunicalo.mx  ·  Atención a clientes: 55 2601 4010" & Environment.NewLine & "Horario de atención de 9 a 18 hrs", f7))
-      fc2.Border = PdfPCell.TOP_BORDER : fc2.BorderColorTop = grisBorde : fc2.PaddingTop = 8.0F : footer2.AddCell(fc2)
-      Dim fl2 As New PdfPCell()
-      fl2.Border = PdfPCell.TOP_BORDER : fl2.BorderColorTop = grisBorde : fl2.PaddingTop = 6.0F
-      Dim logoF2 As Image = Image.GetInstance(Application.StartupPath & "/imgs/LOGOCOMUNICALO.png")
-      logoF2.ScaleToFit(95.0F, 35.0F) : fl2.AddElement(logoF2) : footer2.AddCell(fl2)
-      oDoc.Add(footer2)
-      Dim pg2 As New Paragraph("PÁGINA 2 DE 2", f7) : pg2.Alignment = Element.ALIGN_CENTER : oDoc.Add(pg2)
-
-      If oDoc IsNot Nothing AndAlso oDoc.IsOpen Then
-        oDoc.Close()
-      End If
-
-    Catch ex As Exception
-
-      Try
-        If oDoc IsNot Nothing AndAlso oDoc.IsOpen Then
-          oDoc.Close()
-        End If
-      Catch
-      End Try
-
-      If File.Exists(ruta) Then
-        Try
-          File.Delete(ruta)
-        Catch
-        End Try
-      End If
-
-      MsgBox(ex.Message & Environment.NewLine & ex.StackTrace)
-
-    Finally
-
-      pdfw = Nothing
-      oDoc = Nothing
-
-    End Try
-  End Sub
 
   Private Function ObtenerEstadoCuenta(ByVal id_estado_cuenta As Integer) As DataTable
     Dim sql As String = "select * from ESTADOS_CUENTA where id_estado_cuenta=" & id_estado_cuenta
@@ -1761,6 +1407,198 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
     Return dtEdo
   End Function
 
+  Private Class FooterEstadoCuenta
+    Inherits iTextSharp.text.pdf.PdfPageEventHelper
+
+    Private ReadOnly grisTexto As New iTextSharp.text.Color(100, 105, 115)
+    Private ReadOnly azulOscuro As New iTextSharp.text.Color(12, 45, 88)
+
+    Public Overrides Sub OnEndPage(
+        ByVal writer As iTextSharp.text.pdf.PdfWriter,
+        ByVal document As iTextSharp.text.Document)
+
+      Dim cb As iTextSharp.text.pdf.PdfContentByte =
+            writer.DirectContent
+
+      '==============================================================
+      ' FUENTES
+      '==============================================================
+      Dim fontNormal As iTextSharp.text.pdf.BaseFont =
+            iTextSharp.text.pdf.BaseFont.CreateFont(
+                iTextSharp.text.pdf.BaseFont.HELVETICA,
+                iTextSharp.text.pdf.BaseFont.CP1252,
+                False
+            )
+
+      Dim fontBold As iTextSharp.text.pdf.BaseFont =
+            iTextSharp.text.pdf.BaseFont.CreateFont(
+                iTextSharp.text.pdf.BaseFont.HELVETICA_BOLD,
+                iTextSharp.text.pdf.BaseFont.CP1252,
+                False
+            )
+
+
+      '==============================================================
+      ' POSICIONES
+      '==============================================================
+      Dim x As Single = document.LeftMargin
+
+      Dim yLinea1 As Single = 28.0F
+      Dim yLinea2 As Single = 17.0F
+
+      Dim fontSize As Single = 6.5F
+
+
+      '==============================================================
+      ' PRIMERA LÍNEA
+      '==============================================================
+      Dim correo As String =
+            "soporte_residencial@comunicalo.mx"
+
+      Dim textoAtencion As String =
+            " · Atención a clientes: "
+
+      Dim telefono As String =
+            "55 2601 4010"
+
+
+      cb.BeginText()
+
+      '--------------------------------------------------------------
+      ' Correo en negrita
+      '--------------------------------------------------------------
+      cb.SetFontAndSize(fontBold, fontSize)
+      cb.SetColorFill(azulOscuro)
+
+      cb.SetTextMatrix(
+            x,
+            yLinea1
+        )
+
+      cb.ShowText(correo)
+
+
+      Dim anchoCorreo As Single =
+            fontBold.GetWidthPoint(
+                correo,
+                fontSize
+            )
+
+
+      '--------------------------------------------------------------
+      ' Atención a clientes
+      '--------------------------------------------------------------
+      cb.SetFontAndSize(fontNormal, fontSize)
+      cb.SetColorFill(grisTexto)
+
+      cb.SetTextMatrix(
+            x + anchoCorreo,
+            yLinea1
+        )
+
+      cb.ShowText(textoAtencion)
+
+
+      Dim anchoAtencion As Single =
+            fontNormal.GetWidthPoint(
+                textoAtencion,
+                fontSize
+            )
+
+
+      '--------------------------------------------------------------
+      ' Teléfono en negrita
+      '--------------------------------------------------------------
+      cb.SetFontAndSize(fontBold, fontSize)
+      cb.SetColorFill(azulOscuro)
+
+      cb.SetTextMatrix(
+            x + anchoCorreo + anchoAtencion,
+            yLinea1
+        )
+
+      cb.ShowText(telefono)
+
+      cb.EndText()
+
+
+      '==============================================================
+      ' SEGUNDA LÍNEA
+      '==============================================================
+      cb.BeginText()
+
+      cb.SetFontAndSize(fontNormal, fontSize)
+      cb.SetColorFill(grisTexto)
+
+      cb.SetTextMatrix(
+            x,
+            yLinea2
+        )
+
+      cb.ShowText(
+            "Horario de atención de 9 a 18 hrs"
+        )
+
+      cb.EndText()
+
+
+      '==============================================================
+      ' ICONO / LOGO COMUNÍCALO A LA DERECHA
+      '==============================================================
+      Try
+
+        Dim rutaIcono As String =
+                Application.StartupPath & "/imgs/LOGOCOMUNICALO.png"
+
+        If System.IO.File.Exists(rutaIcono) Then
+
+          Dim imgLogo As iTextSharp.text.Image =
+                    iTextSharp.text.Image.GetInstance(rutaIcono)
+
+          '------------------------------------------------------
+          ' Tamaño máximo del logo en el footer
+          '------------------------------------------------------
+          Dim anchoMaximo As Single = 65.0F
+          Dim altoMaximo As Single = 25.0F
+
+          imgLogo.ScaleToFit(
+                    anchoMaximo,
+                    altoMaximo
+                )
+
+
+          '------------------------------------------------------
+          ' Posición
+          '------------------------------------------------------
+          Dim xLogo As Single =
+                    document.PageSize.Width -
+                    document.RightMargin -
+                    imgLogo.ScaledWidth
+
+          ' Centrado verticalmente respecto a las dos líneas
+          Dim yLogo As Single =
+                    15.0F
+
+
+          imgLogo.SetAbsolutePosition(
+                    xLogo,
+                    yLogo
+                )
+
+          cb.AddImage(imgLogo)
+
+        End If
+
+      Catch ex As Exception
+
+        ' No detenemos la generación del PDF
+        ' si por alguna razón no se encuentra/carga el logo.
+
+      End Try
+
+    End Sub
+
+  End Class
   Private Sub Generar_pdfOXXO_Rediseno(ByVal id_estado_cuenta As Integer,
                                            ByVal id_contrato As Integer,
                                            ByVal path As String,
@@ -1957,6 +1795,8 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
         System.IO.FileShare.None
       )
     )
+
+      writer.PageEvent = New FooterEstadoCuenta()
 
       documento.Open()
 
@@ -2929,9 +2769,9 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       tblTerminos.AddCell(cellTerminos)
       documento.Add(tblTerminos)
 
-      AgregarFooter(
-      documento, logo, grisBorde, f7, "PÁGINA 1 DE 2"
-    )
+      ' AgregarFooter(
+      'documento, logo, grisBorde, f7, "PÁGINA 1 DE 2"
+      ')
 
       '========================================================================
       ' PÁGINA 2
@@ -3748,9 +3588,9 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       '========================================================================
       'documento.Add(tblPasos)
 
-      AgregarFooter(
-      documento, logo2, grisBorde, f7, "PÁGINA 2 DE 2"
-    )
+      ' AgregarFooter(
+      'documento, logo2, grisBorde, f7, "PÁGINA 2 DE 2"
+      ')
 
       ' Close() termina de escribir y cierra writer/stream.
       documento.Close()
@@ -6391,7 +6231,7 @@ lateFeeText))
     'Dim msj As String = crearCorreo("NOVIEMBRE")
     'MessageBox.Show(msj)
     'Console.WriteLine(msj)
-    Generar_pdfOXXO_Rediseno(105479, 7805, "C:\pdf", "1010102677978684", "https://sandbox-api.openpay.mx/barcode/1010102677978684?width=1&height=45&text=false")
+    Generar_pdfOXXO_Rediseno(179338, 6816, "C:\pdf", "1010102677978684", "https://sandbox-api.openpay.mx/barcode/1010102677978684?width=1&height=45&text=false")
     'Dim msj As String = crearCorreo("AGOSTO")
     'insertarCorreo(267, msj, "Comunícalo, estado de cuenta ", "http://localhost/api-comunicalo/Resources/267/242/Edos/EstadoCuenta(16162).pdf", "")
   End Sub
