@@ -2320,7 +2320,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
 
       Dim clabeFormateada As String = account
       If account.Length = 18 Then
-        clabeFormateada = String.Format("{0} {1} {2} {3} {4}",
+        clabeFormateada = String.Format("{0}{1}{2}{3}{4}",
           account.Substring(0, 4),
           account.Substring(4, 4),
           account.Substring(8, 4),
