@@ -1599,6 +1599,10 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
     End Sub
 
   End Class
+
+  '----------------------------------------------------------------
+  'CREACIÓN DE PDF CON REDISEÑO A PARTIR DEL COBRO DE PAGO TARDÍO.
+  '-----------------------------------------------------------------
   Private Sub Generar_pdfOXXO_Rediseno(ByVal id_estado_cuenta As Integer,
                                            ByVal id_contrato As Integer,
                                            ByVal path As String,
@@ -4543,7 +4547,6 @@ lateFeeText))
       End If
     End If
   End Sub
-
 
 
   Private Sub Generar_pdfOXXO(ByVal id_estado_cuenta As Integer, ByVal id_contrato As Integer, ByVal path As String, ByVal refOxxo As String, ByVal codigoBarraOxxo As String)
