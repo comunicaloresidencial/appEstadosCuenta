@@ -10,10 +10,8 @@ Imports System.Text.RegularExpressions
 
 Public Class Generador
   Private PageState As CustomPageState
-  'Public con As New SQL.Conexion("CRM", "201.158.105.66,2332", "C0muN1K10", "Va4MI1lA3t4y")
-  'Public con As New SQL.Conexion("CRM", "localhost", "C0muN1K10", "Va4MI1lA3t4y")
-  'Public con As New SQL.Conexion("CRM", "localhost", "4dm1n", "C0n3ktR8m6*")
-  Public con As New SQL.Conexion("CRM", "DESKTOP-MM7GFSK\SQLEXPRESS", "njl", "nico123*")
+  Public con As New SQL.Conexion("CRM", "localhost", "4dm1n", "C0n3ktR8m6*")
+  'Public con As New SQL.Conexion("CRM", "DESKTOP-MM7GFSK\SQLEXPRESS", "njl", "nico123*")
 
   Private Function registrarEstado(ByVal id_cliente As Integer, ByVal id_contrato As Integer, ByVal estatus As Integer) As Integer
     Dim msj As String = ""
@@ -1603,7 +1601,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
   '----------------------------------------------------------------
   'CREACIÓN DE PDF CON REDISEÑO A PARTIR DEL COBRO DE PAGO TARDÍO.
   '-----------------------------------------------------------------
-  Private Sub Generar_pdfOXXO_Rediseno(ByVal id_estado_cuenta As Integer,
+  Private Sub Generar_pdfOXXO(ByVal id_estado_cuenta As Integer,
                                            ByVal id_contrato As Integer,
                                            ByVal path As String,
                                            ByVal refOxxo As String,
@@ -1714,7 +1712,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
 
     Dim ruta As String = System.IO.Path.Combine(
       path,
-      "EstadoCuentaRediseno(" & id_estado_cuenta.ToString() & ").pdf"
+      "EstadoCuenta(" & id_estado_cuenta.ToString() & ").pdf"
     )
 
     '==========================================================================
@@ -1792,13 +1790,13 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
     Try
       writer = iTextSharp.text.pdf.PdfWriter.GetInstance(
       documento,
-      New System.IO.FileStream(
-        ruta,
-        System.IO.FileMode.Create,
-        System.IO.FileAccess.Write,
-        System.IO.FileShare.None
+        New System.IO.FileStream(
+          ruta,
+          System.IO.FileMode.Create,
+          System.IO.FileAccess.Write,
+          System.IO.FileShare.None
+        )
       )
-    )
 
       writer.PageEvent = New FooterEstadoCuenta()
 
@@ -1828,8 +1826,8 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       tblTitulo.WidthPercentage = 100
 
       Dim cellTitulo As New iTextSharp.text.pdf.PdfPCell(
-      New iTextSharp.text.Phrase("ESTADO DE CUENTA", f18BoldBlue)
-    )
+        New iTextSharp.text.Phrase("ESTADO DE CUENTA", f18BoldBlue)
+      )
       cellTitulo.Border = iTextSharp.text.pdf.PdfPCell.NO_BORDER
       cellTitulo.HorizontalAlignment = iTextSharp.text.Element.ALIGN_RIGHT
       tblTitulo.AddCell(cellTitulo)
@@ -1853,8 +1851,8 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       tblHeader.AddCell(cellTituloContenedor)
 
       Dim cellLineaHeader As New iTextSharp.text.pdf.PdfPCell(
-      New iTextSharp.text.Phrase("")
-    )
+        New iTextSharp.text.Phrase("")
+      )
       cellLineaHeader.Colspan = 2
       cellLineaHeader.Border = iTextSharp.text.pdf.PdfPCell.BOTTOM_BORDER
       cellLineaHeader.BorderColorBottom = azulOscuro
@@ -2012,9 +2010,6 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       '========================================================================
       ' AVISO DE RECARGO
       '========================================================================
-      '========================================================================
-      ' AVISO DE RECARGO DESPUÉS DE FECHA LÍMITE
-      '========================================================================
 
       Dim tblAviso As New iTextSharp.text.pdf.PdfPTable(3)
 
@@ -2023,19 +2018,18 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
 
       ' Icono | Mensaje | Total después de fecha límite
       tblAviso.SetWidths(
-    New Single() {
-        55.0F,
-        390.0F,
-        95.0F
-    }
-)
-
+          New Single() {
+              55.0F,
+              390.0F,
+              95.0F
+          }
+      )
 
       '========================================================================
       ' 1. ICONO DE ALERTA
       '========================================================================
       Dim rutaIconoAlerta As String =
-    Application.StartupPath & "/imgs/icono-alerta.png"
+        Application.StartupPath & "/imgs/icono-alerta.png"
 
       Dim cellIconoAlerta As iTextSharp.text.pdf.PdfPCell
 
@@ -2054,9 +2048,9 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
         anchoIcono * proporcionIcono
 
         imgIconoAlerta.ScaleAbsolute(
-        anchoIcono,
-        altoIcono
-    )
+            anchoIcono,
+            altoIcono
+        )
 
         imgIconoAlerta.Alignment =
         iTextSharp.text.Element.ALIGN_CENTER
@@ -2064,10 +2058,10 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
         ' Pasamos la imagen directamente al PdfPCell.
         ' Evitamos AddElement por los problemas que ya vimos.
         cellIconoAlerta =
-        New iTextSharp.text.pdf.PdfPCell(
-            imgIconoAlerta,
-            False
-        )
+          New iTextSharp.text.pdf.PdfPCell(
+              imgIconoAlerta,
+              False
+          )
 
       Else
 
@@ -2089,16 +2083,16 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
 
 
       cellIconoAlerta.BackgroundColor =
-    iTextSharp.text.Color.WHITE
+       iTextSharp.text.Color.WHITE
 
       cellIconoAlerta.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+       iTextSharp.text.pdf.PdfPCell.NO_BORDER
 
       cellIconoAlerta.HorizontalAlignment =
-    iTextSharp.text.Element.ALIGN_CENTER
+       iTextSharp.text.Element.ALIGN_CENTER
 
       cellIconoAlerta.VerticalAlignment =
-    iTextSharp.text.Element.ALIGN_MIDDLE
+       iTextSharp.text.Element.ALIGN_MIDDLE
 
       cellIconoAlerta.PaddingLeft = 10.0F
       cellIconoAlerta.PaddingRight = 10.0F
@@ -2107,62 +2101,61 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
 
       tblAviso.AddCell(cellIconoAlerta)
 
-
       '========================================================================
       ' 2. TEXTO DEL AVISO
       '========================================================================
 
       Dim fAvisoNormal As New iTextSharp.text.Font(
-    iTextSharp.text.Font.HELVETICA,
-    7.5F,
-    iTextSharp.text.Font.NORMAL,
-    iTextSharp.text.Color.BLACK
-)
+          iTextSharp.text.Font.HELVETICA,
+          7.5F,
+          iTextSharp.text.Font.NORMAL,
+          iTextSharp.text.Color.BLACK
+      )
 
       Dim fAvisoBold As New iTextSharp.text.Font(
-    iTextSharp.text.Font.HELVETICA,
-    7.5F,
-    iTextSharp.text.Font.BOLD,
-    New iTextSharp.text.Color(125, 92, 18)
-)
+          iTextSharp.text.Font.HELVETICA,
+          7.5F,
+          iTextSharp.text.Font.BOLD,
+          New iTextSharp.text.Color(125, 92, 18)
+      )
 
 
       Dim fraseAviso As New iTextSharp.text.Phrase()
 
       fraseAviso.Add(
-    New iTextSharp.text.Chunk(
-        "Si no paga antes del ",
-        fAvisoNormal
-    )
-)
+          New iTextSharp.text.Chunk(
+              "Si no paga antes del ",
+              fAvisoNormal
+          )
+      )
 
       fraseAviso.Add(
-    New iTextSharp.text.Chunk(
-        fechaLimite.ToString("dd/MM/yyyy"),
-        fAvisoBold
-    )
-)
+          New iTextSharp.text.Chunk(
+              fechaLimite.ToString("dd/MM/yyyy"),
+              fAvisoBold
+          )
+      )
 
       fraseAviso.Add(
-    New iTextSharp.text.Chunk(
-        ", se sumará un cargo por pago tardío de ",
-        fAvisoNormal
-    )
-)
+          New iTextSharp.text.Chunk(
+              ", se sumará un cargo por pago tardío de ",
+              fAvisoNormal
+          )
+      )
 
       fraseAviso.Add(
-    New iTextSharp.text.Chunk(
-        FormatCurrency(cargoPagoTardio, 2),
-        fAvisoBold
-    )
-)
+          New iTextSharp.text.Chunk(
+              FormatCurrency(cargoPagoTardio, 2),
+              fAvisoBold
+          )
+      )
 
       fraseAviso.Add(
-    New iTextSharp.text.Chunk(
-        " y su servicio podrá ser suspendido.",
-        fAvisoNormal
-    )
-)
+          New iTextSharp.text.Chunk(
+              " y su servicio podrá ser suspendido.",
+              fAvisoNormal
+          )
+      )
 
 
       Dim parrafoAviso As New iTextSharp.text.Paragraph(fraseAviso)
@@ -2173,20 +2166,19 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
 
 
       Dim cellTextoAviso As New iTextSharp.text.pdf.PdfPCell(
-    parrafoAviso
-)
+          parrafoAviso
+      )
 
-      cellTextoAviso.BackgroundColor =
-    amarilloClaro
+      cellTextoAviso.BackgroundColor = amarilloClaro
 
       cellTextoAviso.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+        iTextSharp.text.pdf.PdfPCell.NO_BORDER
 
       cellTextoAviso.HorizontalAlignment =
-    iTextSharp.text.Element.ALIGN_LEFT
+       iTextSharp.text.Element.ALIGN_LEFT
 
       cellTextoAviso.VerticalAlignment =
-    iTextSharp.text.Element.ALIGN_MIDDLE
+       iTextSharp.text.Element.ALIGN_MIDDLE
 
       cellTextoAviso.PaddingLeft = 12.0F
       cellTextoAviso.PaddingRight = 10.0F
@@ -2203,50 +2195,50 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       Dim fraseTotalDespues As New iTextSharp.text.Phrase()
 
       fraseTotalDespues.Add(
-    New iTextSharp.text.Chunk(
-        FormatCurrency(totalDespuesFecha, 2),
-        New iTextSharp.text.Font(
-            iTextSharp.text.Font.HELVETICA,
-            16.0F,
-            iTextSharp.text.Font.BOLD,
-            iTextSharp.text.Color.WHITE
-        )
-    )
-)
+          New iTextSharp.text.Chunk(
+              FormatCurrency(totalDespuesFecha, 2),
+              New iTextSharp.text.Font(
+                  iTextSharp.text.Font.HELVETICA,
+                  16.0F,
+                  iTextSharp.text.Font.BOLD,
+                  iTextSharp.text.Color.WHITE
+              )
+          )
+      )
 
       fraseTotalDespues.Add(
-    New iTextSharp.text.Chunk(
-        Environment.NewLine &
-        "TOTAL DESPUÉS",
-        New iTextSharp.text.Font(
-            iTextSharp.text.Font.HELVETICA,
-            6.5F,
-            iTextSharp.text.Font.BOLD,
-            iTextSharp.text.Color.WHITE
-        )
-    )
-)
+          New iTextSharp.text.Chunk(
+              Environment.NewLine &
+              "TOTAL DESPUÉS",
+              New iTextSharp.text.Font(
+                  iTextSharp.text.Font.HELVETICA,
+                  6.5F,
+                  iTextSharp.text.Font.BOLD,
+                  iTextSharp.text.Color.WHITE
+              )
+          )
+      )
 
       fraseTotalDespues.Add(
-    New iTextSharp.text.Chunk(
-        Environment.NewLine &
-        "DEL " & fechaLimite.ToString("dd/MM/yyyy"),
-        New iTextSharp.text.Font(
-            iTextSharp.text.Font.HELVETICA,
-            6.5F,
-            iTextSharp.text.Font.BOLD,
-            iTextSharp.text.Color.WHITE
-        )
-    )
-)
+          New iTextSharp.text.Chunk(
+              Environment.NewLine &
+              "DEL " & fechaLimite.ToString("dd/MM/yyyy"),
+              New iTextSharp.text.Font(
+                  iTextSharp.text.Font.HELVETICA,
+                  6.5F,
+                  iTextSharp.text.Font.BOLD,
+                  iTextSharp.text.Color.WHITE
+              )
+          )
+      )
 
 
       Dim parrafoTotalDespues As New iTextSharp.text.Paragraph(
-    fraseTotalDespues
-)
+          fraseTotalDespues
+      )
 
       parrafoTotalDespues.Alignment =
-    iTextSharp.text.Element.ALIGN_CENTER
+       iTextSharp.text.Element.ALIGN_CENTER
 
       parrafoTotalDespues.Leading = 8.0F
       parrafoTotalDespues.SpacingBefore = 0.0F
@@ -2254,20 +2246,19 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
 
 
       Dim cellTotalDespues As New iTextSharp.text.pdf.PdfPCell(
-    parrafoTotalDespues
-)
+          parrafoTotalDespues
+      )
 
-      cellTotalDespues.BackgroundColor =
-    azul
+      cellTotalDespues.BackgroundColor = azul
 
       cellTotalDespues.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+       iTextSharp.text.pdf.PdfPCell.NO_BORDER
 
       cellTotalDespues.HorizontalAlignment =
-    iTextSharp.text.Element.ALIGN_CENTER
+        iTextSharp.text.Element.ALIGN_CENTER
 
       cellTotalDespues.VerticalAlignment =
-    iTextSharp.text.Element.ALIGN_MIDDLE
+        iTextSharp.text.Element.ALIGN_MIDDLE
 
       cellTotalDespues.PaddingLeft = 5.0F
       cellTotalDespues.PaddingRight = 5.0F
@@ -2398,8 +2389,6 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       documento.Add(tblClabe)
       documento.Add(New iTextSharp.text.Paragraph(" ", f7))
 
-      ' EMISOR / CLIENTE
-      '========================================================================
       '========================================================================
       ' EMISOR / CLIENTE
       '========================================================================
@@ -2417,36 +2406,36 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
 
       ' Título
       fraseEmisor.Add(
-    New iTextSharp.text.Chunk(
-        "EMISOR" &
-        Environment.NewLine &
-        Environment.NewLine,
-        f8BoldBlue
-    )
-)
+          New iTextSharp.text.Chunk(
+              "EMISOR" &
+              Environment.NewLine &
+              Environment.NewLine,
+              f8BoldBlue
+          )
+      )
 
       ' Razón social
       fraseEmisor.Add(
-    New iTextSharp.text.Chunk(
-        "Comunícalo de México S.A. de C.V." &
-        Environment.NewLine,
-        f9Bold
-    )
-)
+          New iTextSharp.text.Chunk(
+              "Comunícalo de México S.A. de C.V." &
+              Environment.NewLine,
+              f9Bold
+          )
+      )
 
       ' Dirección
       fraseEmisor.Add(
-    New iTextSharp.text.Chunk(
-        "Convento de Churubusco No. 4," &
-        Environment.NewLine &
-        "Col. Jardines de Santa Mónica" &
-        Environment.NewLine &
-        "Mpio. Tlalnepantla de Baz, Estado de México, C.P. 54050" &
-        Environment.NewLine &
-        "RFC: CME0806162SA",
-        f8
-    )
-)
+          New iTextSharp.text.Chunk(
+              "Convento de Churubusco No. 4," &
+              Environment.NewLine &
+              "Col. Jardines de Santa Mónica" &
+              Environment.NewLine &
+              "Mpio. Tlalnepantla de Baz, Estado de México, C.P. 54050" &
+              Environment.NewLine &
+              "RFC: CME0806162SA",
+              f8
+          )
+      )
 
       ' Convertimos todo a un solo Paragraph para controlar el interlineado.
       Dim parrafoEmisor As New iTextSharp.text.Paragraph(fraseEmisor)
@@ -2468,10 +2457,9 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       cellEmisor.PaddingBottom = 10.0F
 
       cellEmisor.VerticalAlignment =
-    iTextSharp.text.Element.ALIGN_TOP
+       iTextSharp.text.Element.ALIGN_TOP
 
       tblInformacion.AddCell(cellEmisor)
-
 
       '========================================================================
       ' CLIENTE
@@ -2480,65 +2468,65 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
 
       ' Título
       fraseClienteInfo.Add(
-    New iTextSharp.text.Chunk(
-        "CLIENTE" &
-        Environment.NewLine &
-        Environment.NewLine,
-        f8BoldBlue
-    )
-)
+          New iTextSharp.text.Chunk(
+              "CLIENTE" &
+              Environment.NewLine &
+              Environment.NewLine,
+              f8BoldBlue
+          )
+      )
 
       ' Nombre
       fraseClienteInfo.Add(
-    New iTextSharp.text.Chunk(
-        nombreCliente &
-        Environment.NewLine,
-        f9Bold
-    )
-)
+          New iTextSharp.text.Chunk(
+              nombreCliente &
+              Environment.NewLine,
+              f9Bold
+          )
+      )
 
       ' Dirección
       fraseClienteInfo.Add(
-    New iTextSharp.text.Chunk(
-        direccionCliente1 &
-        Environment.NewLine &
-        direccionCliente2 &
-        Environment.NewLine &
-        Environment.NewLine,
-        f8
-    )
-)
+          New iTextSharp.text.Chunk(
+              direccionCliente1 &
+              Environment.NewLine &
+              direccionCliente2 &
+              Environment.NewLine &
+              Environment.NewLine,
+              f8
+          )
+      )
 
       ' Contrato
       fraseClienteInfo.Add(
-    New iTextSharp.text.Chunk(
-        "Contrato      ",
-        f8
-    )
-)
+          New iTextSharp.text.Chunk(
+              "Contrato      ",
+              f8
+          )
+      )
 
       fraseClienteInfo.Add(
-    New iTextSharp.text.Chunk(
-        contrato &
-        Environment.NewLine,
-        f8BoldBlue
-    )
-)
+          New iTextSharp.text.Chunk(
+              contrato &
+              Environment.NewLine,
+              f8BoldBlue
+          )
+      )
 
       ' Teléfono
       fraseClienteInfo.Add(
-    New iTextSharp.text.Chunk(
-        "Teléfono      ",
-        f8
-    )
-)
+          New iTextSharp.text.Chunk(
+              "Teléfono      ",
+              f8
+          )
+      )
 
       fraseClienteInfo.Add(
-    New iTextSharp.text.Chunk(
-        telefono,
-        f8BoldBlue
+        New iTextSharp.text.Chunk(
+            telefono,
+            f8BoldBlue
+        )
     )
-)
 
 
       ' Convertimos todo a un solo Paragraph.
@@ -2561,7 +2549,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       cellCliente.PaddingBottom = 10.0F
 
       cellCliente.VerticalAlignment =
-    iTextSharp.text.Element.ALIGN_TOP
+        iTextSharp.text.Element.ALIGN_TOP
 
       tblInformacion.AddCell(cellCliente)
 
@@ -2572,11 +2560,11 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       documento.Add(tblInformacion)
 
       documento.Add(
-    New iTextSharp.text.Paragraph(
-        " ",
-        f7
-    )
-)
+          New iTextSharp.text.Paragraph(
+              " ",
+              f7
+          )
+      )
 
       documento.Add(New iTextSharp.text.Paragraph(" ", f7))
 
@@ -2589,10 +2577,10 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
 
       Dim cellTituloCargos As New iTextSharp.text.pdf.PdfPCell(
       New iTextSharp.text.Phrase(
-        "SERVICIOS CONTRATADOS · DESGLOSE DE CARGOS",
-        f10BoldBlue
+          "SERVICIOS CONTRATADOS · DESGLOSE DE CARGOS",
+          f10BoldBlue
+        )
       )
-    )
       cellTituloCargos.Border = iTextSharp.text.pdf.PdfPCell.BOTTOM_BORDER
       cellTituloCargos.BorderColorBottom = grisBorde
       cellTituloCargos.BorderWidthBottom = 0.8F
@@ -2621,8 +2609,8 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
 
       Dim cellMesActual As New iTextSharp.text.pdf.PdfPCell(
       New iTextSharp.text.Phrase(
-        "CARGOS DEL MES · " & mesFacturacion, f8BoldBlue)
-    )
+          "CARGOS DEL MES · " & mesFacturacion, f8BoldBlue)
+      )
       cellMesActual.Colspan = 3
       cellMesActual.BackgroundColor = azulClaro
       cellMesActual.BorderColor = grisBorde
@@ -2707,24 +2695,24 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       Dim fraseTotal As New iTextSharp.text.Phrase()
 
       fraseTotal.Add(
-    New iTextSharp.text.Chunk(
-        "TOTAL A PAGAR",
-        f10BoldWhite
-    )
-)
+          New iTextSharp.text.Chunk(
+              "TOTAL A PAGAR",
+              f10BoldWhite
+          )
+      )
 
       fraseTotal.Add(
-    New iTextSharp.text.Chunk(
-        Environment.NewLine &
-        "Importe total registrado en el estado de cuenta",
-        New iTextSharp.text.Font(
-            iTextSharp.text.Font.HELVETICA,
-            6.8F,
-            iTextSharp.text.Font.NORMAL,
-            iTextSharp.text.Color.WHITE
-        )
-    )
-)
+          New iTextSharp.text.Chunk(
+              Environment.NewLine &
+              "Importe total registrado en el estado de cuenta",
+              New iTextSharp.text.Font(
+                  iTextSharp.text.Font.HELVETICA,
+                  6.8F,
+                  iTextSharp.text.Font.NORMAL,
+                  iTextSharp.text.Color.WHITE
+              )
+          )
+      )
 
       Dim cellTotalLabel As New iTextSharp.text.pdf.PdfPCell(fraseTotal)
 
@@ -2741,11 +2729,11 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
 
 
       Dim cellTotalImporte As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase(
-        FormatCurrency(totalPagar, 2),
-        f10BoldWhite
-    )
-)
+          New iTextSharp.text.Phrase(
+              FormatCurrency(totalPagar, 2),
+              f10BoldWhite
+          )
+      )
 
       cellTotalImporte.BackgroundColor = azul
       cellTotalImporte.Border = iTextSharp.text.pdf.PdfPCell.NO_BORDER
@@ -2762,11 +2750,11 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       tblTerminos.LockedWidth = True
 
       Dim cellTerminos As New iTextSharp.text.pdf.PdfPCell(
-      New iTextSharp.text.Phrase(
-        "* En el caso de haber realizado un cambio o actualización en su paquete, al realizar el pago de este Estado de Cuenta, usted acepta los nuevos Términos y Condiciones aplicables.",
-        f7
+        New iTextSharp.text.Phrase(
+          "* En el caso de haber realizado un cambio o actualización en su paquete, al realizar el pago de este Estado de Cuenta, usted acepta los nuevos Términos y Condiciones aplicables.",
+          f7
+        )
       )
-    )
       cellTerminos.BackgroundColor = grisClaro
       cellTerminos.Border = iTextSharp.text.pdf.PdfPCell.NO_BORDER
       cellTerminos.Padding = 8.0F
@@ -2801,16 +2789,16 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       Dim tblTitulo2 As New iTextSharp.text.pdf.PdfPTable(1)
 
       Dim cellTitulo2 As New iTextSharp.text.pdf.PdfPCell(
-      New iTextSharp.text.Phrase("FORMAS DE PAGO", f13BoldBlue)
-    )
+        New iTextSharp.text.Phrase("FORMAS DE PAGO", f13BoldBlue)
+      )
       cellTitulo2.Border = iTextSharp.text.pdf.PdfPCell.NO_BORDER
       cellTitulo2.HorizontalAlignment = iTextSharp.text.Element.ALIGN_RIGHT
       tblTitulo2.AddCell(cellTitulo2)
 
       Dim cellSubtitulo2 As New iTextSharp.text.pdf.PdfPCell(
-      New iTextSharp.text.Phrase(
-        "Contrato: " & contrato & " · " & mesFacturacion, f8)
-    )
+        New iTextSharp.text.Phrase(
+          "Contrato: " & contrato & " · " & mesFacturacion, f8)
+      )
       cellSubtitulo2.Border = iTextSharp.text.pdf.PdfPCell.NO_BORDER
       cellSubtitulo2.HorizontalAlignment = iTextSharp.text.Element.ALIGN_RIGHT
       tblTitulo2.AddCell(cellSubtitulo2)
@@ -2838,9 +2826,9 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       tblLateTitle.LockedWidth = True
 
       Dim cellLateTitle As New iTextSharp.text.pdf.PdfPCell(
-      New iTextSharp.text.Phrase(
-        "IMPORTANTE — PAGO TARDÍO", f10BoldWhite)
-    )
+        New iTextSharp.text.Phrase(
+          "IMPORTANTE — PAGO TARDÍO", f10BoldWhite)
+      )
       cellLateTitle.BackgroundColor = azul
       cellLateTitle.Border = iTextSharp.text.pdf.PdfPCell.NO_BORDER
       cellLateTitle.Padding = 9.0F
@@ -2853,15 +2841,15 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       tblLateBody.SetWidths(New Single() {435.0F, 105.0F})
 
       Dim cellLateText As New iTextSharp.text.pdf.PdfPCell(
-      New iTextSharp.text.Phrase(
-        "A partir del mes de AGOSTO DE 2026, los pagos realizados después de la fecha límite establecida generarán un cargo administrativo por pago tardío de " &
-        FormatCurrency(cargoPagoTardio, 2) &
-        " (Cincuenta pesos 00/100 M.N.), el cual se aplicará de forma inmediata." &
-        Environment.NewLine & Environment.NewLine &
-        "En caso de suspensión del servicio por falta de pago, este cargo deberá liquidarse junto con la mensualidad vencida para la reactivación del servicio. Le invitamos a pagar dentro de la fecha establecida para evitar cargos adicionales.",
-        f8Black
+        New iTextSharp.text.Phrase(
+          "A partir del mes de AGOSTO DE 2026, los pagos realizados después de la fecha límite establecida generarán un cargo administrativo por pago tardío de " &
+          FormatCurrency(cargoPagoTardio, 2) &
+          " (Cincuenta pesos 00/100 M.N.), el cual se aplicará de forma inmediata." &
+          Environment.NewLine & Environment.NewLine &
+          "En caso de suspensión del servicio por falta de pago, este cargo deberá liquidarse junto con la mensualidad vencida para la reactivación del servicio. Le invitamos a pagar dentro de la fecha establecida para evitar cargos adicionales.",
+          f8Black
+        )
       )
-    )
       cellLateText.BackgroundColor = amarilloClaro
       cellLateText.BorderColor = New iTextSharp.text.Color(232, 220, 170)
       cellLateText.BorderWidth = 0.7F
@@ -2876,23 +2864,23 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
 
       Dim pLateAmount As New iTextSharp.text.Paragraph(
       FormatCurrency(cargoPagoTardio, 2),
-      New iTextSharp.text.Font(
-        iTextSharp.text.Font.HELVETICA, 18.0F,
-        iTextSharp.text.Font.BOLD,
-        New iTextSharp.text.Color(125, 92, 18)
+        New iTextSharp.text.Font(
+          iTextSharp.text.Font.HELVETICA, 18.0F,
+          iTextSharp.text.Font.BOLD,
+          New iTextSharp.text.Color(125, 92, 18)
+        )
       )
-    )
       pLateAmount.Alignment = iTextSharp.text.Element.ALIGN_CENTER
       cellLateAmount.AddElement(pLateAmount)
 
       Dim pLateText As New iTextSharp.text.Paragraph(
       "CARGO POR" & Environment.NewLine & "PAGO TARDÍO",
-      New iTextSharp.text.Font(
-        iTextSharp.text.Font.HELVETICA, 7.0F,
-        iTextSharp.text.Font.BOLD,
-        New iTextSharp.text.Color(125, 92, 18)
+        New iTextSharp.text.Font(
+          iTextSharp.text.Font.HELVETICA, 7.0F,
+          iTextSharp.text.Font.BOLD,
+          New iTextSharp.text.Color(125, 92, 18)
+        )
       )
-    )
       pLateText.Alignment = iTextSharp.text.Element.ALIGN_CENTER
       cellLateAmount.AddElement(pLateText)
 
@@ -2904,7 +2892,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       ' IMPORTANTE - PAGO TARDÍO
       '========================================================================
       Dim rutaAvisoPago As String =
-    Application.StartupPath & "/imgs/aviso-pago.png"
+        Application.StartupPath & "/imgs/aviso-pago.png"
 
       If System.IO.File.Exists(rutaAvisoPago) Then
 
@@ -2922,9 +2910,9 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
         anchoAviso * proporcionAviso
 
         imgAvisoPago.ScaleAbsolute(
-        anchoAviso,
-        altoAviso
-    )
+            anchoAviso,
+            altoAviso
+        )
 
         imgAvisoPago.Alignment =
         iTextSharp.text.Element.ALIGN_CENTER
@@ -2944,9 +2932,9 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       tblTiendas.LockedWidth = True
 
       Dim cellTiendasTitulo As New iTextSharp.text.pdf.PdfPCell(
-      New iTextSharp.text.Phrase(
-        "CÓDIGO PARA PAGO EN TIENDAS", f10BoldBlue)
-    )
+        New iTextSharp.text.Phrase(
+          "CÓDIGO PARA PAGO EN TIENDAS", f10BoldBlue)
+      )
       cellTiendasTitulo.Border = PdfCell.NO_BORDER
       cellTiendasTitulo.BorderWidthBottom = 0
       cellTiendasTitulo.PaddingTop = 10.0F
@@ -2969,7 +2957,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       cellImagenTiendas.BorderWidthTop = 0
       cellImagenTiendas.BorderWidthBottom = 0
       cellImagenTiendas.HorizontalAlignment =
-    iTextSharp.text.Element.ALIGN_CENTER
+        iTextSharp.text.Element.ALIGN_CENTER
 
 
       cellImagenTiendas.Padding = 6.0F
@@ -2996,10 +2984,6 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
         Dim imagenCodigo As iTextSharp.text.Image =
         iTextSharp.text.Image.GetInstance(codigoBarraOxxo)
 
-        ' IMPORTANTE:
-        ' No usamos AddElement(imagenCodigo).
-        ' Tampoco hacemos ScaleToFit.
-        ' La versión original coloca directamente la imagen en el PdfPCell.
         Dim cellImagenCodigo As New iTextSharp.text.pdf.PdfPCell(imagenCodigo)
 
         cellImagenCodigo.Border =
@@ -3034,10 +3018,10 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       )
 
       cellReferencia.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+        iTextSharp.text.pdf.PdfPCell.NO_BORDER
 
       cellReferencia.HorizontalAlignment =
-    iTextSharp.text.Element.ALIGN_CENTER
+        iTextSharp.text.Element.ALIGN_CENTER
 
       cellReferencia.PaddingTop = 3.0F
       cellReferencia.PaddingBottom = 2.0F
@@ -3048,17 +3032,17 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       ' LEYENDA
       '-----------------------------------------------------------------------
       Dim cellAyuda As New iTextSharp.text.pdf.PdfPCell(
-        New iTextSharp.text.Phrase(
-            "Muestre este código de barras en caja o dicte los dígitos de la referencia.",
-            f7
-        )
-    )
+          New iTextSharp.text.Phrase(
+              "Muestre este código de barras en caja o dicte los dígitos de la referencia.",
+              f7
+          )
+      )
 
       cellAyuda.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+        iTextSharp.text.pdf.PdfPCell.NO_BORDER
 
       cellAyuda.HorizontalAlignment =
-    iTextSharp.text.Element.ALIGN_CENTER
+       iTextSharp.text.Element.ALIGN_CENTER
 
       cellAyuda.PaddingTop = 1.0F
       cellAyuda.PaddingBottom = 8.0F
@@ -3075,10 +3059,10 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       cellCodigo.BorderWidthTop = 0
 
       cellCodigo.HorizontalAlignment =
-    iTextSharp.text.Element.ALIGN_CENTER
+       iTextSharp.text.Element.ALIGN_CENTER
 
       cellCodigo.VerticalAlignment =
-    iTextSharp.text.Element.ALIGN_MIDDLE
+       iTextSharp.text.Element.ALIGN_MIDDLE
 
       cellCodigo.Padding = 0.0F
 
@@ -3088,30 +3072,21 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       documento.Add(New iTextSharp.text.Paragraph(" ", f7))
 
       ' Instrucciones.
-
-
-      'AGREGAR PASOS'
-      '========================================================================
-      ' INSTRUCCIONES PARA PAGO EN TIENDAS
-      '========================================================================
       '========================================================================
       ' INSTRUCCIONES PARA PAGO EN TIENDAS
       '========================================================================
 
-      '-----------------------------------------------------------------------
-      ' TÍTULO + LÍNEA
-      '-----------------------------------------------------------------------
       Dim tblTituloPasos As New iTextSharp.text.pdf.PdfPTable(2)
       tblTituloPasos.TotalWidth = 540.0F
       tblTituloPasos.LockedWidth = True
       tblTituloPasos.SetWidths(New Single() {235.0F, 305.0F})
 
       Dim cellTituloPasos As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase(
-        "INSTRUCCIONES PARA PAGO EN TIENDAS",
-        f10BoldBlue
-    )
-)
+          New iTextSharp.text.Phrase(
+              "INSTRUCCIONES PARA PAGO EN TIENDAS",
+              f10BoldBlue
+          )
+      )
 
       cellTituloPasos.Border = iTextSharp.text.pdf.PdfPCell.NO_BORDER
       cellTituloPasos.PaddingLeft = 0.0F
@@ -3119,31 +3094,27 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       cellTituloPasos.PaddingTop = 0.0F
       cellTituloPasos.PaddingBottom = 7.0F
       cellTituloPasos.VerticalAlignment =
-    iTextSharp.text.Element.ALIGN_MIDDLE
+        iTextSharp.text.Element.ALIGN_MIDDLE
 
       tblTituloPasos.AddCell(cellTituloPasos)
 
       Dim cellLineaPasos As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase("")
-)
+          New iTextSharp.text.Phrase("")
+      )
 
       cellLineaPasos.Border =
-    iTextSharp.text.pdf.PdfPCell.BOTTOM_BORDER
+       iTextSharp.text.pdf.PdfPCell.BOTTOM_BORDER
 
       cellLineaPasos.BorderColorBottom = grisBorde
       cellLineaPasos.BorderWidthBottom = 0.8F
       cellLineaPasos.PaddingTop = 0.0F
       cellLineaPasos.PaddingBottom = 7.0F
 
-      'tblTituloPasos.AddCell(cellLineaPasos)
-
-      'documento.Add(tblTituloPasos)
-
       '========================================================================
       ' INSTRUCCIONES PARA PAGO EN TIENDAS
       '========================================================================
       Dim rutaInstrucciones As String =
-    Application.StartupPath & "/imgs/instrucciones-pago.png"
+       Application.StartupPath & "/imgs/instrucciones-pago.png"
 
       If System.IO.File.Exists(rutaInstrucciones) Then
 
@@ -3161,9 +3132,9 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
         anchoFinal * proporcion
 
         imgInstrucciones.ScaleAbsolute(
-        anchoFinal,
-        altoFinal
-    )
+            anchoFinal,
+            altoFinal
+        )
 
         imgInstrucciones.Alignment =
         iTextSharp.text.Element.ALIGN_CENTER
@@ -3173,8 +3144,8 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       End If
 
       documento.Add(
-    New iTextSharp.text.Paragraph(" ", f7)
-)
+          New iTextSharp.text.Paragraph(" ", f7)
+      )
 
 
       '-----------------------------------------------------------------------
@@ -3189,32 +3160,32 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       ' FUENTES
       '========================================================================
       Dim fNumeroPaso As New iTextSharp.text.Font(
-    iTextSharp.text.Font.HELVETICA,
-    9.0F,
-    iTextSharp.text.Font.BOLD,
-    iTextSharp.text.Color.WHITE
-)
+      iTextSharp.text.Font.HELVETICA,
+          9.0F,
+          iTextSharp.text.Font.BOLD,
+          iTextSharp.text.Color.WHITE
+      )
 
       Dim fTextoPaso As New iTextSharp.text.Font(
-    iTextSharp.text.Font.HELVETICA,
-    7.7F,
-    iTextSharp.text.Font.NORMAL,
-    grisTexto
-)
+          iTextSharp.text.Font.HELVETICA,
+          7.7F,
+          iTextSharp.text.Font.NORMAL,
+          grisTexto
+      )
 
       Dim fTextoPasoBold As New iTextSharp.text.Font(
-    iTextSharp.text.Font.HELVETICA,
-    7.7F,
-    iTextSharp.text.Font.BOLD,
-    iTextSharp.text.Color.BLACK
-)
+          iTextSharp.text.Font.HELVETICA,
+          7.7F,
+          iTextSharp.text.Font.BOLD,
+          iTextSharp.text.Color.BLACK
+      )
 
       Dim fTextoPasoBlue As New iTextSharp.text.Font(
-    iTextSharp.text.Font.HELVETICA,
-    7.7F,
-    iTextSharp.text.Font.BOLD,
-    azulOscuro
-)
+          iTextSharp.text.Font.HELVETICA,
+          7.7F,
+          iTextSharp.text.Font.BOLD,
+          azulOscuro
+      )
 
 
       '========================================================================
@@ -3227,14 +3198,14 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       tblPasos.LockedWidth = True
 
       tblPasos.SetWidths(
-    New Single() {
-        170.0F,
-        10.0F,
-        170.0F,
-        10.0F,
-        180.0F
-    }
-)
+          New Single() {
+              170.0F,
+              10.0F,
+              170.0F,
+              10.0F,
+              180.0F
+          }
+      )
 
 
       '========================================================================
@@ -3249,25 +3220,25 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       tblNumero1.SetWidths(New Single() {22.0F, 22.0F, 126.0F})
 
       Dim espacioNumero1Izq As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase("")
-)
+          New iTextSharp.text.Phrase("")
+      )
       espacioNumero1Izq.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+          iTextSharp.text.pdf.PdfPCell.NO_BORDER
       tblNumero1.AddCell(espacioNumero1Izq)
 
       Dim cellNumero1 As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase("1", fNumeroPaso)
-)
+          New iTextSharp.text.Phrase("1", fNumeroPaso)
+      )
 
       cellNumero1.BackgroundColor = azulOscuro
       cellNumero1.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+        iTextSharp.text.pdf.PdfPCell.NO_BORDER
 
       cellNumero1.HorizontalAlignment =
-    iTextSharp.text.Element.ALIGN_CENTER
+       iTextSharp.text.Element.ALIGN_CENTER
 
       cellNumero1.VerticalAlignment =
-    iTextSharp.text.Element.ALIGN_MIDDLE
+        iTextSharp.text.Element.ALIGN_MIDDLE
 
       cellNumero1.FixedHeight = 22.0F
       cellNumero1.PaddingTop = 5.0F
@@ -3276,38 +3247,37 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       tblNumero1.AddCell(cellNumero1)
 
       Dim espacioNumero1Der As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase("")
-)
+          New iTextSharp.text.Phrase("")
+      )
       espacioNumero1Der.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+        iTextSharp.text.pdf.PdfPCell.NO_BORDER
       tblNumero1.AddCell(espacioNumero1Der)
 
       Dim contNumero1 As New iTextSharp.text.pdf.PdfPCell(tblNumero1)
       contNumero1.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+       iTextSharp.text.pdf.PdfPCell.NO_BORDER
       contNumero1.PaddingTop = 9.0F
       contNumero1.PaddingBottom = 6.0F
 
       tblPaso1.AddCell(contNumero1)
 
-
       ' Texto paso 1
       Dim frasePaso1 As New iTextSharp.text.Phrase()
 
       frasePaso1.Add(
-    New iTextSharp.text.Chunk(
-        "Elija la tienda ",
-        fTextoPasoBold
-    )
-)
+          New iTextSharp.text.Chunk(
+              "Elija la tienda ",
+              fTextoPasoBold
+          )
+      )
 
       frasePaso1.Add(
-    New iTextSharp.text.Chunk(
-        "que más le convenga entre las cadenas indicadas " &
-        "(solo se puede pagar en esas tiendas).",
-        fTextoPaso
-    )
-)
+          New iTextSharp.text.Chunk(
+              "que más le convenga entre las cadenas indicadas " &
+              "(solo se puede pagar en esas tiendas).",
+              fTextoPaso
+          )
+      )
 
       Dim pTextoPaso1 As New iTextSharp.text.Paragraph(frasePaso1)
       pTextoPaso1.Leading = 13.0F
@@ -3317,7 +3287,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       Dim cellTextoPaso1 As New iTextSharp.text.pdf.PdfPCell(pTextoPaso1)
 
       cellTextoPaso1.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+        iTextSharp.text.pdf.PdfPCell.NO_BORDER
 
       cellTextoPaso1.PaddingLeft = 10.0F
       cellTextoPaso1.PaddingRight = 10.0F
@@ -3332,22 +3302,20 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       contPaso1.Padding = 0.0F
       contPaso1.MinimumHeight = 105.0F
       contPaso1.VerticalAlignment =
-    iTextSharp.text.Element.ALIGN_TOP
+        iTextSharp.text.Element.ALIGN_TOP
 
       tblPasos.AddCell(contPaso1)
-
 
       '========================================================================
       ' SEPARADOR 1
       '========================================================================
       Dim separador1 As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase("")
-)
+          New iTextSharp.text.Phrase("")
+      )
       separador1.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+       iTextSharp.text.pdf.PdfPCell.NO_BORDER
 
       tblPasos.AddCell(separador1)
-
 
       '========================================================================
       ' PASO 2
@@ -3361,25 +3329,25 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       tblNumero2.SetWidths(New Single() {22.0F, 22.0F, 126.0F})
 
       Dim espacioNumero2Izq As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase("")
-)
+          New iTextSharp.text.Phrase("")
+      )
       espacioNumero2Izq.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+        iTextSharp.text.pdf.PdfPCell.NO_BORDER
       tblNumero2.AddCell(espacioNumero2Izq)
 
       Dim cellNumero2 As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase("2", fNumeroPaso)
-)
+          New iTextSharp.text.Phrase("2", fNumeroPaso)
+      )
 
       cellNumero2.BackgroundColor = azulOscuro
       cellNumero2.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+       iTextSharp.text.pdf.PdfPCell.NO_BORDER
 
       cellNumero2.HorizontalAlignment =
-    iTextSharp.text.Element.ALIGN_CENTER
+        iTextSharp.text.Element.ALIGN_CENTER
 
       cellNumero2.VerticalAlignment =
-    iTextSharp.text.Element.ALIGN_MIDDLE
+       iTextSharp.text.Element.ALIGN_MIDDLE
 
       cellNumero2.FixedHeight = 22.0F
       cellNumero2.PaddingTop = 5.0F
@@ -3388,58 +3356,57 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       tblNumero2.AddCell(cellNumero2)
 
       Dim espacioNumero2Der As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase("")
-)
+          New iTextSharp.text.Phrase("")
+      )
       espacioNumero2Der.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+       iTextSharp.text.pdf.PdfPCell.NO_BORDER
       tblNumero2.AddCell(espacioNumero2Der)
 
       Dim contNumero2 As New iTextSharp.text.pdf.PdfPCell(tblNumero2)
       contNumero2.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+       iTextSharp.text.pdf.PdfPCell.NO_BORDER
       contNumero2.PaddingTop = 9.0F
       contNumero2.PaddingBottom = 6.0F
 
       tblPaso2.AddCell(contNumero2)
 
-
       ' Texto paso 2
       Dim frasePaso2 As New iTextSharp.text.Phrase()
 
       frasePaso2.Add(
-    New iTextSharp.text.Chunk(
-        "Al acercarse al mostrador, mencione que viene a pagar ",
-        fTextoPaso
-    )
-)
+          New iTextSharp.text.Chunk(
+              "Al acercarse al mostrador, mencione que viene a pagar ",
+              fTextoPaso
+          )
+      )
 
       frasePaso2.Add(
-    New iTextSharp.text.Chunk(
-        "CONEKTA",
-        fTextoPasoBlue
-    )
-)
+          New iTextSharp.text.Chunk(
+              "CONEKTA",
+              fTextoPasoBlue
+          )
+      )
 
       frasePaso2.Add(
-    New iTextSharp.text.Chunk(
-        " y ",
-        fTextoPaso
-    )
-)
+          New iTextSharp.text.Chunk(
+              " y ",
+              fTextoPaso
+          )
+      )
 
       frasePaso2.Add(
-    New iTextSharp.text.Chunk(
-        "muestre el código de barras",
-        fTextoPasoBold
-    )
-)
+          New iTextSharp.text.Chunk(
+              "muestre el código de barras",
+              fTextoPasoBold
+          )
+      )
 
       frasePaso2.Add(
-    New iTextSharp.text.Chunk(
-        " o dicte los números de la referencia.",
-        fTextoPaso
-    )
-)
+          New iTextSharp.text.Chunk(
+              " o dicte los números de la referencia.",
+              fTextoPaso
+          )
+      )
 
       Dim pTextoPaso2 As New iTextSharp.text.Paragraph(frasePaso2)
       pTextoPaso2.Leading = 13.0F
@@ -3449,7 +3416,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       Dim cellTextoPaso2 As New iTextSharp.text.pdf.PdfPCell(pTextoPaso2)
 
       cellTextoPaso2.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+        iTextSharp.text.pdf.PdfPCell.NO_BORDER
 
       cellTextoPaso2.PaddingLeft = 10.0F
       cellTextoPaso2.PaddingRight = 10.0F
@@ -3464,7 +3431,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       contPaso2.Padding = 0.0F
       contPaso2.MinimumHeight = 105.0F
       contPaso2.VerticalAlignment =
-    iTextSharp.text.Element.ALIGN_TOP
+        iTextSharp.text.Element.ALIGN_TOP
 
       tblPasos.AddCell(contPaso2)
 
@@ -3473,13 +3440,12 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       ' SEPARADOR 2
       '========================================================================
       Dim separador2 As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase("")
-)
+          New iTextSharp.text.Phrase("")
+      )
       separador2.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+       iTextSharp.text.pdf.PdfPCell.NO_BORDER
 
       tblPasos.AddCell(separador2)
-
 
       '========================================================================
       ' PASO 3
@@ -3493,25 +3459,25 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       tblNumero3.SetWidths(New Single() {22.0F, 22.0F, 136.0F})
 
       Dim espacioNumero3Izq As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase("")
-)
+          New iTextSharp.text.Phrase("")
+      )
       espacioNumero3Izq.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+       iTextSharp.text.pdf.PdfPCell.NO_BORDER
       tblNumero3.AddCell(espacioNumero3Izq)
 
       Dim cellNumero3 As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase("3", fNumeroPaso)
-)
+          New iTextSharp.text.Phrase("3", fNumeroPaso)
+      )
 
       cellNumero3.BackgroundColor = azulOscuro
       cellNumero3.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+        iTextSharp.text.pdf.PdfPCell.NO_BORDER
 
       cellNumero3.HorizontalAlignment =
-    iTextSharp.text.Element.ALIGN_CENTER
+        iTextSharp.text.Element.ALIGN_CENTER
 
       cellNumero3.VerticalAlignment =
-    iTextSharp.text.Element.ALIGN_MIDDLE
+        iTextSharp.text.Element.ALIGN_MIDDLE
 
       cellNumero3.FixedHeight = 22.0F
       cellNumero3.PaddingTop = 5.0F
@@ -3520,44 +3486,43 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       tblNumero3.AddCell(cellNumero3)
 
       Dim espacioNumero3Der As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase("")
-)
+          New iTextSharp.text.Phrase("")
+      )
       espacioNumero3Der.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+        iTextSharp.text.pdf.PdfPCell.NO_BORDER
       tblNumero3.AddCell(espacioNumero3Der)
 
       Dim contNumero3 As New iTextSharp.text.pdf.PdfPCell(tblNumero3)
       contNumero3.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+       iTextSharp.text.pdf.PdfPCell.NO_BORDER
       contNumero3.PaddingTop = 9.0F
       contNumero3.PaddingBottom = 6.0F
 
       tblPaso3.AddCell(contNumero3)
 
-
       ' Texto paso 3
       Dim frasePaso3 As New iTextSharp.text.Phrase()
 
       frasePaso3.Add(
-    New iTextSharp.text.Chunk(
-        "Una vez realizado el pago en efectivo, ",
-        fTextoPaso
-    )
-)
+          New iTextSharp.text.Chunk(
+              "Una vez realizado el pago en efectivo, ",
+              fTextoPaso
+          )
+      )
 
       frasePaso3.Add(
-    New iTextSharp.text.Chunk(
-        "enviaremos una notificación de pago en tiempo real",
-        fTextoPasoBold
-    )
-)
+          New iTextSharp.text.Chunk(
+              "enviaremos una notificación de pago en tiempo real",
+              fTextoPasoBold
+          )
+      )
 
       frasePaso3.Add(
-    New iTextSharp.text.Chunk(
-        " a su correo y ¡listo!",
-        fTextoPaso
-    )
-)
+          New iTextSharp.text.Chunk(
+              " a su correo y ¡listo!",
+              fTextoPaso
+          )
+      )
 
       Dim pTextoPaso3 As New iTextSharp.text.Paragraph(frasePaso3)
       pTextoPaso3.Leading = 13.0F
@@ -3567,7 +3532,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       Dim cellTextoPaso3 As New iTextSharp.text.pdf.PdfPCell(pTextoPaso3)
 
       cellTextoPaso3.Border =
-    iTextSharp.text.pdf.PdfPCell.NO_BORDER
+       iTextSharp.text.pdf.PdfPCell.NO_BORDER
 
       cellTextoPaso3.PaddingLeft = 10.0F
       cellTextoPaso3.PaddingRight = 10.0F
@@ -3582,7 +3547,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       contPaso3.Padding = 0.0F
       contPaso3.MinimumHeight = 105.0F
       contPaso3.VerticalAlignment =
-    iTextSharp.text.Element.ALIGN_TOP
+       iTextSharp.text.Element.ALIGN_TOP
 
       tblPasos.AddCell(contPaso3)
 
@@ -3590,11 +3555,6 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       '========================================================================
       ' AGREGAR SECCIÓN AL PDF
       '========================================================================
-      'documento.Add(tblPasos)
-
-      ' AgregarFooter(
-      'documento, logo2, grisBorde, f7, "PÁGINA 2 DE 2"
-      ')
 
       ' Close() termina de escribir y cierra writer/stream.
       documento.Close()
@@ -3633,27 +3593,27 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
                                   ByVal fuenteImporte As iTextSharp.text.Font)
 
     Dim cellPlan As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase(plan, fuentePlan)
-  )
+      New iTextSharp.text.Phrase(plan, fuentePlan)
+    )
     cellPlan.BorderColor = colorBorde
     cellPlan.Padding = 7.0F
     tabla.AddCell(cellPlan)
 
     Dim cellConcepto As New iTextSharp.text.pdf.PdfPCell(
     New iTextSharp.text.Phrase(
-      concepto,
-      New iTextSharp.text.Font(
-        iTextSharp.text.Font.HELVETICA, 8.0F,
-        iTextSharp.text.Font.NORMAL, iTextSharp.text.Color.BLACK)
+        concepto,
+        New iTextSharp.text.Font(
+          iTextSharp.text.Font.HELVETICA, 8.0F,
+          iTextSharp.text.Font.NORMAL, iTextSharp.text.Color.BLACK)
+      )
     )
-  )
     cellConcepto.BorderColor = colorBorde
     cellConcepto.Padding = 7.0F
     tabla.AddCell(cellConcepto)
 
     Dim cellImporte As New iTextSharp.text.pdf.PdfPCell(
-    New iTextSharp.text.Phrase(FormatCurrency(importe, 2), fuenteImporte)
-  )
+      New iTextSharp.text.Phrase(FormatCurrency(importe, 2), fuenteImporte)
+    )
     cellImporte.BorderColor = colorBorde
     cellImporte.HorizontalAlignment = iTextSharp.text.Element.ALIGN_RIGHT
     cellImporte.Padding = 7.0F
@@ -4549,7 +4509,7 @@ lateFeeText))
   End Sub
 
 
-  Private Sub Generar_pdfOXXO(ByVal id_estado_cuenta As Integer, ByVal id_contrato As Integer, ByVal path As String, ByVal refOxxo As String, ByVal codigoBarraOxxo As String)
+  Private Sub Generar_pdfOXXO_vbefore_late_paid(ByVal id_estado_cuenta As Integer, ByVal id_contrato As Integer, ByVal path As String, ByVal refOxxo As String, ByVal codigoBarraOxxo As String)
     Dim sqledo As String = "select * from ESTADOS_CUENTA where id_estado_cuenta=" & id_estado_cuenta
     Dim dtedo As DataTable = con.ConsultarDT(sqledo)
     If dtedo IsNot Nothing AndAlso dtedo.Rows.Count > 0 Then
@@ -6202,39 +6162,7 @@ lateFeeText))
   End Function
 
   Private Sub Generador_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-    'MessageBox.Show(Now.Hour.ToString())
-    'MessageBox.Show(Now.Minute.ToString())
-    'Dim refOxxo As Object = referenciaOXXO(105487, 29)
-    'MessageBox.Show(refOxxo.Referencia)
-    'MessageBox.Show(refOxxo.CodigoBarras)
-
-    'Dim id_contrato As Integer = 6749
-    'Dim grantotal As Double = 350
-    'Dim balance As Decimal = 0
-    'Dim sqlBalance As String = "select top 1 coalesce(b.balance,0) as balance from CONTRATOS c WITH (NOLOCK) left join CONTRACTS_BALANCES b WITH (NOLOCK) on c.id_contrato=b.id_contrato " &
-    '     "where c.id_contrato=" & id_contrato & " order by b.id desc;"
-    'Dim dtBalance As DataTable = con.ConsultarDT(sqlBalance)
-
-    'If dtBalance IsNot Nothing AndAlso dtBalance.Rows.Count > 0 Then
-    'balance = Val(dtBalance(0)("balance").ToString)
-    'End If
-
-    'Dim auxTotal As Double = grantotal + balance
-    'Dim auxTotalBill = 0
-
-    'If auxTotal <= 0 Then
-    'auxTotalBill = 0
-    'End If
-    'Dim id_estado_cuenta As Integer = registerBill(137, 112, 2)
-    'MsgBox(id_estado_cuenta)
-    'MessageBox.Show(id_estado_cuenta)
-    'MessageBox.Show(auxTotal)
-    'MessageBox.Show(auxTotalBill)
-    'MessageBox.Show(balance)
-    'Dim msj As String = crearCorreo("NOVIEMBRE")
-    'MessageBox.Show(msj)
-    'Console.WriteLine(msj)
-    Generar_pdfOXXO_Rediseno(179338, 6816, "C:\pdf", "1010102677978684", "https://sandbox-api.openpay.mx/barcode/1010102677978684?width=1&height=45&text=false")
+    'Generar_pdfOXXO(179311, 8746, "C:\pdf", "10101026779787222", "https://sandbox-api.openpay.mx/barcode/1010102677978684?width=1&height=45&text=false")
     'Dim msj As String = crearCorreo("AGOSTO")
     'insertarCorreo(267, msj, "Comunícalo, estado de cuenta ", "http://localhost/api-comunicalo/Resources/267/242/Edos/EstadoCuenta(16162).pdf", "")
   End Sub
