@@ -2011,6 +2011,11 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       ' AVISO DE RECARGO
       '========================================================================
 
+      '--------------------------------------------------------------------------------------
+      ' ESTE ES EL BANNER DE CARGOS , DEBERÁ VERSE CUANDO ESTE COMPLETO EL PROCESO DE PAGO
+      ' TARDÍO
+      '--------------------------------------------------------------------------------------
+
       Dim tblAviso As New iTextSharp.text.pdf.PdfPTable(3)
 
       tblAviso.TotalWidth = 540.0F
@@ -2278,8 +2283,8 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
       espacioDespuesAlerta.Leading = 7.0F
 
       documento.Add(espacioDespuesAlerta)
-
-      documento.Add(tblAviso)
+      ' Esto debe verse cuando el proceso de pago tardío ya este en funcionamiento.
+      'documento.Add(tblAviso)
       documento.Add(New iTextSharp.text.Paragraph(" ", f7))
 
       '========================================================================
@@ -6162,7 +6167,7 @@ lateFeeText))
   End Function
 
   Private Sub Generador_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-    'Generar_pdfOXXO(179311, 8746, "C:\pdf", "10101026779787222", "https://sandbox-api.openpay.mx/barcode/1010102677978684?width=1&height=45&text=false")
+    'Generar_pdfOXXO(149117, 5960, "C:\pdf", "10101026779787333", "https://sandbox-api.openpay.mx/barcode/1010102677978684?width=1&height=45&text=false")
     'Dim msj As String = crearCorreo("AGOSTO")
     'insertarCorreo(267, msj, "Comunícalo, estado de cuenta ", "http://localhost/api-comunicalo/Resources/267/242/Edos/EstadoCuenta(16162).pdf", "")
   End Sub
