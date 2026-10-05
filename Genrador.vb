@@ -1049,7 +1049,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
             tblPeriodo.AddCell(cellChargesTitle)
 
             For i = 0 To dtCharges.Rows.Count - 1
-              Dim cellCharges As New PdfPCell(New Phrase(dtCharges.Rows(0)("nombre").ToString(), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
+              Dim cellCharges As New PdfPCell(New Phrase(dtCharges.Rows(i)("nombre").ToString(), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
               cellCharges.Border = PdfPCell.NO_BORDER
               cellCharges.BorderWidth = 0
               cellCharges.PaddingTop = 0
@@ -1058,7 +1058,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
               cellCharges.BorderColor = Color.WHITE
 
               tblPeriodo.AddCell(cellCharges)
-              tblPeriodo.AddCell(New Phrase(FormatCurrency(dtCharges.Rows(0)("importe").ToString(), 2), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
+              tblPeriodo.AddCell(New Phrase(FormatCurrency(dtCharges.Rows(i)("importe").ToString(), 2), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
             Next
           End If
 
@@ -1076,7 +1076,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
             tblPeriodo.AddCell(cellChargesTitle)
 
             For i = 0 To dtDiscount.Rows.Count - 1
-              Dim cellCharges As New PdfPCell(New Phrase(dtDiscount.Rows(0)("nombre").ToString(), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
+              Dim cellCharges As New PdfPCell(New Phrase(dtDiscount.Rows(i)("nombre").ToString(), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
               cellCharges.Border = PdfPCell.NO_BORDER
               cellCharges.BorderWidth = 0
               cellCharges.PaddingTop = 0
@@ -1085,7 +1085,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
               cellCharges.BorderColor = Color.WHITE
 
               tblPeriodo.AddCell(cellCharges)
-              tblPeriodo.AddCell(New Phrase(FormatCurrency(dtDiscount.Rows(0)("importe").ToString(), 2), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
+              tblPeriodo.AddCell(New Phrase(FormatCurrency(dtDiscount.Rows(i)("importe").ToString(), 2), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
             Next
           End If
 
@@ -4057,7 +4057,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
             tblPeriodo.AddCell(cellChargesTitle)
 
             For i = 0 To dtCharges.Rows.Count - 1
-              Dim cellCharges As New PdfPCell(New Phrase(dtCharges.Rows(0)("nombre").ToString(), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
+              Dim cellCharges As New PdfPCell(New Phrase(dtCharges.Rows(i)("nombre").ToString(), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
               cellCharges.Border = PdfPCell.NO_BORDER
               cellCharges.BorderWidth = 0
               cellCharges.PaddingTop = 0
@@ -4066,7 +4066,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
               cellCharges.BorderColor = Color.WHITE
 
               tblPeriodo.AddCell(cellCharges)
-              tblPeriodo.AddCell(New Phrase(FormatCurrency(dtCharges.Rows(0)("importe").ToString(), 2), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
+              tblPeriodo.AddCell(New Phrase(FormatCurrency(dtCharges.Rows(i)("importe").ToString(), 2), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
             Next
           End If
 
@@ -4084,7 +4084,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
             tblPeriodo.AddCell(cellChargesTitle)
 
             For i = 0 To dtDiscount.Rows.Count - 1
-              Dim cellCharges As New PdfPCell(New Phrase(dtDiscount.Rows(0)("nombre").ToString(), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
+              Dim cellCharges As New PdfPCell(New Phrase(dtDiscount.Rows(i)("nombre").ToString(), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
               cellCharges.Border = PdfPCell.NO_BORDER
               cellCharges.BorderWidth = 0
               cellCharges.PaddingTop = 0
@@ -4093,7 +4093,7 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
               cellCharges.BorderColor = Color.WHITE
 
               tblPeriodo.AddCell(cellCharges)
-              tblPeriodo.AddCell(New Phrase(FormatCurrency(dtDiscount.Rows(0)("importe").ToString(), 2), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
+              tblPeriodo.AddCell(New Phrase(FormatCurrency(dtDiscount.Rows(i)("importe").ToString(), 2), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
             Next
           End If
 
@@ -4857,7 +4857,7 @@ lateFeeText))
             tblPeriodo.AddCell(cellChargesTitle)
 
             For i = 0 To dtCharges.Rows.Count - 1
-              Dim cellCharges As New PdfPCell(New Phrase(dtCharges.Rows(0)("nombre").ToString(), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
+              Dim cellCharges As New PdfPCell(New Phrase(dtCharges.Rows(i)("nombre").ToString(), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
               cellCharges.Border = PdfPCell.NO_BORDER
               cellCharges.BorderWidth = 0
               cellCharges.PaddingTop = 0
@@ -4866,7 +4866,7 @@ lateFeeText))
               cellCharges.BorderColor = Color.WHITE
 
               tblPeriodo.AddCell(cellCharges)
-              tblPeriodo.AddCell(New Phrase(FormatCurrency(dtCharges.Rows(0)("importe").ToString(), 2), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
+              tblPeriodo.AddCell(New Phrase(FormatCurrency(dtCharges.Rows(i)("importe").ToString(), 2), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
             Next
           End If
 
@@ -4884,7 +4884,7 @@ lateFeeText))
             tblPeriodo.AddCell(cellChargesTitle)
 
             For i = 0 To dtDiscount.Rows.Count - 1
-              Dim cellCharges As New PdfPCell(New Phrase(dtDiscount.Rows(0)("nombre").ToString(), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
+              Dim cellCharges As New PdfPCell(New Phrase(dtDiscount.Rows(i)("nombre").ToString(), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
               cellCharges.Border = PdfPCell.NO_BORDER
               cellCharges.BorderWidth = 0
               cellCharges.PaddingTop = 0
@@ -4893,7 +4893,7 @@ lateFeeText))
               cellCharges.BorderColor = Color.WHITE
 
               tblPeriodo.AddCell(cellCharges)
-              tblPeriodo.AddCell(New Phrase(FormatCurrency(dtDiscount.Rows(0)("importe").ToString(), 2), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
+              tblPeriodo.AddCell(New Phrase(FormatCurrency(dtDiscount.Rows(i)("importe").ToString(), 2), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
             Next
           End If
 
@@ -5678,7 +5678,7 @@ lateFeeText))
             tblPeriodo.AddCell(cellChargesTitle)
 
             For i = 0 To dtCharges.Rows.Count - 1
-              Dim cellCharges As New PdfPCell(New Phrase(dtCharges.Rows(0)("nombre").ToString(), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
+              Dim cellCharges As New PdfPCell(New Phrase(dtCharges.Rows(i)("nombre").ToString(), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
               cellCharges.Border = PdfPCell.NO_BORDER
               cellCharges.BorderWidth = 0
               cellCharges.PaddingTop = 0
@@ -5687,7 +5687,7 @@ lateFeeText))
               cellCharges.BorderColor = Color.WHITE
 
               tblPeriodo.AddCell(cellCharges)
-              tblPeriodo.AddCell(New Phrase(FormatCurrency(dtCharges.Rows(0)("importe").ToString(), 2), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
+              tblPeriodo.AddCell(New Phrase(FormatCurrency(dtCharges.Rows(i)("importe").ToString(), 2), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
             Next
           End If
 
@@ -5705,7 +5705,7 @@ lateFeeText))
             tblPeriodo.AddCell(cellChargesTitle)
 
             For i = 0 To dtDiscount.Rows.Count - 1
-              Dim cellCharges As New PdfPCell(New Phrase(dtDiscount.Rows(0)("nombre").ToString(), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
+              Dim cellCharges As New PdfPCell(New Phrase(dtDiscount.Rows(i)("nombre").ToString(), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
               cellCharges.Border = PdfPCell.NO_BORDER
               cellCharges.BorderWidth = 0
               cellCharges.PaddingTop = 0
@@ -5714,7 +5714,7 @@ lateFeeText))
               cellCharges.BorderColor = Color.WHITE
 
               tblPeriodo.AddCell(cellCharges)
-              tblPeriodo.AddCell(New Phrase(FormatCurrency(dtDiscount.Rows(0)("importe").ToString(), 2), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
+              tblPeriodo.AddCell(New Phrase(FormatCurrency(dtDiscount.Rows(i)("importe").ToString(), 2), New Font(iTextSharp.text.Font.HELVETICA, 10.0F, iTextSharp.text.Font.NORMAL, Color.BLACK)))
             Next
           End If
 
@@ -6092,7 +6092,7 @@ lateFeeText))
             If (File.Exists(ruta & "\EstadoCuenta(" + id_estado_cuenta.ToString + ").pdf")) Then
               Dim mes_facturacion = mesFacturacion(id_estado_cuenta)
               Dim msj As String = crearCorreo(mes_facturacion)
-              insertarCorreo(Val(dt(i)("id_cliente").ToString), msj, "Comunícalo, estado de cuenta " & mes_facturacion, "http://localhost/api-comunicalo/Resources/" & Val(dt(i)("id_cliente").ToString) & "/" & id_contrato.ToString & "/Edos/EstadoCuenta(" + id_estado_cuenta.ToString + ").pdf", "ltorres@cccard.net")
+              insertarCorreo(Val(dt(i)("id_cliente").ToString), msj, "Comunícalo, estado de cuenta " & mes_facturacion, "https://comunicalodemexico.com.mx:10443/api-comunicalo/Resources/" & Val(dt(i)("id_cliente").ToString) & "/" & id_contrato.ToString & "/Edos/EstadoCuenta(" + id_estado_cuenta.ToString + ").pdf", "ltorres@cccard.net")
             Else
               insertarCorreo(-1, "Ocurrio un error al generar el documento del estado de cuenta del contrato: " & dt(i)("contrato").ToString, "Error al generar documento de estado de cuenta", "", "njimenez@comunicalo.mx;dcastillo@comunicalo.mx")
             End If
@@ -6169,7 +6169,7 @@ lateFeeText))
   Private Sub Generador_Load(sender As Object, e As EventArgs) Handles MyBase.Load
     'Generar_pdfOXXO(149117, 5960, "C:\pdf", "10101026779787333", "https://sandbox-api.openpay.mx/barcode/1010102677978684?width=1&height=45&text=false")
     'Dim msj As String = crearCorreo("AGOSTO")
-    'insertarCorreo(267, msj, "Comunícalo, estado de cuenta ", "http://localhost/api-comunicalo/Resources/267/242/Edos/EstadoCuenta(16162).pdf", "")
+    'insertarCorreo(267, msj, "Comunícalo, estado de cuenta ", "https://comunicalodemexico.com.mx:10443/api-comunicalo/Resources/267/242/Edos/EstadoCuenta(16162).pdf", "")
   End Sub
 
   Private Sub todos_Click(sender As Object, e As EventArgs) Handles todos.Click
@@ -6237,7 +6237,7 @@ lateFeeText))
         "</p>" &
                                 "</body>" &
                                 "</html>"
-                insertarCorreo(Val(dt(i)("id_cliente").ToString), msj, "Comunícalo, estado de cuenta " & mes_facturacion, "http://localhost/api-comunicalo/Resources/" & Val(dt(i)("id_cliente").ToString) & "/" & id_contrato.ToString & "/Edos/EstadoCuenta(" + id_estado_cuenta.ToString + ").pdf", "")
+                insertarCorreo(Val(dt(i)("id_cliente").ToString), msj, "Comunícalo, estado de cuenta " & mes_facturacion, "https://comunicalodemexico.com.mx:10443/api-comunicalo/Resources/" & Val(dt(i)("id_cliente").ToString) & "/" & id_contrato.ToString & "/Edos/EstadoCuenta(" + id_estado_cuenta.ToString + ").pdf", "")
               Else
                 insertarCorreo(-1, "Ocurrio un error al generar el documento del estado de cuenta del contrato: " & dt(i)("contrato").ToString, "Error al generar documento de estado de cuenta", "", "ltorres@cccard.net;njimenez@comunicalo.mx")
               End If
@@ -6281,7 +6281,7 @@ lateFeeText))
                 If (File.Exists(ruta & "\EstadoCuenta(" + id_estado_cuenta.ToString + ").pdf")) Then
                   Dim mes_facturacion = mesFacturacion(id_estado_cuenta)
                   Dim msj As String = crearCorreo(mes_facturacion)
-                  insertarCorreo(id_cliente, msj, "Comunícalo, estado de cuenta " & mes_facturacion, "http://localhost/api-comunicalo/Resources/" & id_cliente.ToString & "/" & id_contrato.ToString & "/Edos/EstadoCuenta(" + id_estado_cuenta.ToString + ").pdf", "")
+                  insertarCorreo(id_cliente, msj, "Comunícalo, estado de cuenta " & mes_facturacion, "https://comunicalodemexico.com.mx:10443/api-comunicalo/Resources/" & id_cliente.ToString & "/" & id_contrato.ToString & "/Edos/EstadoCuenta(" + id_estado_cuenta.ToString + ").pdf", "")
                 Else
                   insertarCorreo(-1, "Ocurrio un error al generar el documento del estado de cuenta del contrato: " & dt(i)("contrato").ToString, "Error al generar documento de estado de cuenta", "", "ltorres@cccard.net;njimenez@comunicalo.mx")
                 End If
@@ -6433,7 +6433,7 @@ lateFeeText))
                 If (File.Exists(ruta & "\EstadoCuenta(" + id_estado_cuenta.ToString + ").pdf")) Then
                   Dim mes_facturacion = mesFacturacion(id_estado_cuenta)
                   Dim msj As String = crearCorreo(mes_facturacion)
-                  insertarCorreo(Val(dt(i)("id_cliente").ToString), msj, "Comunícalo, estado de cuenta " & mes_facturacion, "http://localhost/api-comunicalo/Resources/" & Val(dt(i)("id_cliente").ToString) & "/" & id_contrato.ToString & "/Edos/EstadoCuenta(" + id_estado_cuenta.ToString + ").pdf", "ltorres@cccard.net")
+                  insertarCorreo(Val(dt(i)("id_cliente").ToString), msj, "Comunícalo, estado de cuenta " & mes_facturacion, "https://comunicalodemexico.com.mx:10443/api-comunicalo/Resources/" & Val(dt(i)("id_cliente").ToString) & "/" & id_contrato.ToString & "/Edos/EstadoCuenta(" + id_estado_cuenta.ToString + ").pdf", "ltorres@cccard.net")
                 Else
                   insertarCorreo(-1, "Ocurrio un error al generar el documento del estado de cuenta del contrato: " & dt(i)("contrato").ToString, "Error al generar documento de estado de cuenta", "", "njimenez@comunicalo.mx;dcastillo@comunicalo.mx")
                 End If
@@ -6621,7 +6621,7 @@ lateFeeText))
               If (File.Exists(ruta & "\EstadoCuenta(" + id_estado_cuenta.ToString + ").pdf")) Then
                 Dim mes_facturacion = mesFacturacion(id_estado_cuenta)
                 Dim msj As String = crearCorreo(mes_facturacion)
-                insertarCorreo(id_cliente, msj, "Comunícalo, estado de cuenta " & mes_facturacion, "http://localhost/api-comunicalo/Resources/" & id_cliente.ToString & "/" & id_contrato.ToString & "/Edos/EstadoCuenta(" + id_estado_cuenta.ToString + ").pdf", "")
+                insertarCorreo(id_cliente, msj, "Comunícalo, estado de cuenta " & mes_facturacion, "https://comunicalodemexico.com.mx:10443/api-comunicalo/Resources/" & id_cliente.ToString & "/" & id_contrato.ToString & "/Edos/EstadoCuenta(" + id_estado_cuenta.ToString + ").pdf", "")
                 ' MsgBox("Archivo generado y enviado")
                 contador += 1
               Else
@@ -6673,7 +6673,7 @@ lateFeeText))
             If (File.Exists(ruta & "\EstadoCuenta(" + id_estado_cuenta.ToString + ").pdf")) Then
               Dim mes_facturacion = mesFacturacion(id_estado_cuenta)
               Dim msj As String = crearCorreo(mes_facturacion)
-              insertarCorreo(id_cliente, msj, "Comunícalo, estado de cuenta " & mes_facturacion, "http://localhost/api-comunicalo/Resources/" & id_cliente.ToString & "/" & id_contrato.ToString & "/Edos/EstadoCuenta(" + id_estado_cuenta.ToString + ").pdf", "")
+              insertarCorreo(id_cliente, msj, "Comunícalo, estado de cuenta " & mes_facturacion, "https://comunicalodemexico.com.mx:10443/api-comunicalo/Resources/" & id_cliente.ToString & "/" & id_contrato.ToString & "/Edos/EstadoCuenta(" + id_estado_cuenta.ToString + ").pdf", "")
               MsgBox("Archivo generado y enviado")
             Else
               MsgBox("No se encontro el archivo o no se pudo generar")
@@ -6739,7 +6739,7 @@ lateFeeText))
         "</p>" &
                 "</body>" &
                 "</html>"
-          insertarCorreo(Val(dt(i)("id_cliente").ToString), msj, "Comunícalo, estado de cuenta " & mes_facturacion, "http://localhost/api-comunicalo/Resources/" & Val(dt(i)("id_cliente").ToString) & "/" & Val(dt(i)("id_contrato").ToString) & "/Edos/EstadoCuenta(" + dt(i)("id_estado_cuenta").ToString + ").pdf", "")
+          insertarCorreo(Val(dt(i)("id_cliente").ToString), msj, "Comunícalo, estado de cuenta " & mes_facturacion, "https://comunicalodemexico.com.mx:10443/api-comunicalo/Resources/" & Val(dt(i)("id_cliente").ToString) & "/" & Val(dt(i)("id_contrato").ToString) & "/Edos/EstadoCuenta(" + dt(i)("id_estado_cuenta").ToString + ").pdf", "")
         Next
       End If
 
