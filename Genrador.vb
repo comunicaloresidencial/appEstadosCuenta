@@ -96,6 +96,26 @@ Public Class Generador
       statusBill = 0
     End If
 
+    ' Anticipo de instalación (Libs/PagosAnticipo en api-comunicalo) sin ligar: la primera
+    ' mensualidad de un contrato nuevo se paga y se registra en PAGOS desde el alta, con
+    ' id_estado_cuenta=0 (huérfano a propósito, ver InstalarContrato) -- CONTRACTS_BALANCES nunca
+    ' se entera de ese pago, así que "auxTotal <= 0" nunca detecta que el periodo 1 ya se cubrió.
+    ' Se busca aquí, antes de insertar, para no crear el estado de cuenta como pendiente cuando ya
+    ' hay un pago real esperando a ligarse (causó suspensiones indebidas: contratos 09978/09981).
+    Dim huboPagoAnticipoExistente As Boolean = False
+    Dim sqlBuscaAnticipo As String = "select top 1 id_pago, total from PAGOS where id_contrato=" & id_contrato &
+      " and id_estado_cuenta=0 and DATEDIFF(day,periodoA,convert(date,'" & periodoA & "',103))=0" &
+      " and DATEDIFF(day,periodoB,convert(date,'" & periodoB & "',103))=0 and total>=" & FormatNumber(grantotal, 2).Replace(",", "") &
+      " order by id_pago desc;"
+    Dim dtBuscaAnticipo As DataTable = con.ConsultarDT(sqlBuscaAnticipo)
+    If dtBuscaAnticipo IsNot Nothing AndAlso dtBuscaAnticipo.Rows.Count > 0 Then
+      huboPagoAnticipoExistente = True
+      statusBill = 0
+      ' No cargar este periodo (ya cubierto por el anticipo) como saldo pendiente futuro en
+      ' CONTRACTS_BALANCES -- si no, se arrastraría como deuda fantasma al siguiente ciclo.
+      auxTotal = 0
+    End If
+
     'Dim sql As String = $"insert into ESTADOS_CUENTA values(" & id_cliente & "," & id_contrato & "," & id_paquete & "," & mensualidad & "," & FormatNumber(excedentes_mat, 2).Replace(",", "") & "," & FormatNumber(excedentes_tel, 2).Replace(",", "") & "," & FormatNumber(otros_cobros, 2).Replace(",", "") & "," & FormatNumber(descuentos, 2).Replace(",", "") & "," & FormatNumber(grantotal, 2).Replace(",", "") & ",'" & periodoA & "','" & periodoB & "',1,getdate()," & FormatNumber(saldo_pendiente, 2).Replace(",", "") & ");SELECT @@IDENTITY as Id;"
     Dim sql As String = $"insert into ESTADOS_CUENTA values(" & id_cliente & "," & id_contrato & "," & id_paquete & "," & mensualidad & "," & FormatNumber(excedentes_mat, 2).Replace(",", "") & "," & FormatNumber(excedentes_tel, 2).Replace(",", "") & "," & FormatNumber(otros_cobros, 2).Replace(",", "") & "," & FormatNumber(descuentos, 2).Replace(",", "") & "," & FormatNumber(auxTotalBill, 2).Replace(",", "") & ",convert(date,'" & periodoA & "',103),convert(date,'" & periodoB & "',103)," & statusBill & ",getdate()," & FormatNumber(saldo_pendiente, 2).Replace(",", "") & ");SELECT @@IDENTITY as Id;"
     'MsgBox(sql)
@@ -117,16 +137,16 @@ Public Class Generador
       sqlUpdateBalance = "UPDATE CONTRACTS_BALANCES set balance=" & auxTotal & ",last_update=getdate() where id_contrato=" & id_contrato & ";"
       con.ModRegEli(sqlUpdateBalance)
 
-      If auxTotal <= 0 Then
+      If auxTotal <= 0 Or huboPagoAnticipoExistente Then
         'Search payment
-        Dim sqlSearchPayment As String = "select top 1 * from PAGOS where id_contrato=" & id_contrato & " and DATEDIFF(Day, periodoA,convert(date,'" & periodoA & "',103)) = 0 and DATEDIFF(day,periodoB,convert(date,'" & periodoB & "',103)) = 0 " &
+        Dim sqlSearchPayment As String = "select top 1 * from PAGOS where id_contrato=" & id_contrato & " and id_estado_cuenta=0 and DATEDIFF(Day, periodoA,convert(date,'" & periodoA & "',103)) = 0 and DATEDIFF(day,periodoB,convert(date,'" & periodoB & "',103)) = 0 " &
         "order by id_pago desc;"
         'Console.WriteLine("Consulta para buscar el pago")
         'Console.WriteLine(sqlSearchPayment)
         Dim dtPayment As DataTable = con.ConsultarDT(sqlSearchPayment)
         If dtPayment IsNot Nothing AndAlso dtPayment.Rows.Count > 0 Then
           Dim idPayment As Integer = Val(dtPayment(0)("id_pago").ToString())
-          Dim sqlUpdatePayment = "UPDATE PAGOS set id_estado_cuenta=" & id_estado_cuenta & "where id_pago=" & idPayment
+          Dim sqlUpdatePayment = "UPDATE PAGOS set id_estado_cuenta=" & id_estado_cuenta & " where id_pago=" & idPayment
           con.ModRegEli(sqlUpdatePayment)
         Else
           Dim sqlCreatePayment As String = "insert into PAGOS values(" & id_contrato & "," & id_estado_cuenta & ",0,5,getdate(),0,convert(date,'" & periodoA & "',103),convert(date,'" & periodoB & "',103),0,0,1,1,0,0);"
