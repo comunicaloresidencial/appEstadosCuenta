@@ -6436,6 +6436,21 @@ lateFeeText))
     Return msj
   End Function
 
+  ' Punto de entrada para modo headless (sin mostrar la ventana), invocado desde
+  ' ApplicationEvents.vb cuando el exe se lanza con el argumento "auto" -- pensado para que una
+  ' tarea real de Windows dispare esto, en vez de depender de que alguien deje la ventana abierta
+  ' para que Timer1_Tick (7am) la dispare. Repite el mismo candado "ya se genero hoy" que usa
+  ' Timer1_Tick, por si la tarea se dispara mas de una vez el mismo dia.
+  Public Sub EjecutarGeneracionAutomatica()
+    Try
+      If Not Generados() Then
+        GenerarTodosRef()
+      End If
+    Catch ex As Exception
+      insertarCorreo(-1, "Error en modo headless (auto) de AppEstadosCuenta: " & ex.Message, "Error al generar estado de cuenta", "", "njimenez@comunicalo.mx;dcastillo@comunicalo.mx")
+    End Try
+  End Sub
+
   Private Sub GenerarTodosRef()
     'Dim sql As String = "Select cli.id_cliente,c.id_contrato,contrato,c.estatus FROM clientes cli INNER JOIN dbo.CONTRATOS c On c.id_cliente = cli.id_cliente WHERE fecha_edo_cta='" & fecha & "' AND c.estatus in(2,3)"
     'Dim sql As String = "SELECT cli.id_cliente,c.id_contrato,contrato,c.estatus FROM clientes cli INNER JOIN dbo.CONTRATOS c ON c.id_cliente = cli.id_cliente" &
