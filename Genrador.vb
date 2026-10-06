@@ -6281,6 +6281,12 @@ lateFeeText))
       For i = 0 To dt.Rows.Count - 1
         Try
           Dim id_contrato As Integer = Val(dt(i)("id_contrato").ToString)
+          Dim periodosCheck As Object = getPeriodos(id_contrato, Val(dt(i)("estatus").ToString))
+          If YaExistePeriodo(id_contrato, periodosCheck.PeriodoA) Then
+            ' Ya se habia generado este periodo (p.ej. correccion manual previa) -- se omite para
+            ' no duplicar el estado de cuenta al volver a correr una fecha ya procesada.
+            Continue For
+          End If
           If revisarEstados(Val(dt(i)("id_cliente").ToString), id_contrato, Val(dt(i)("estatus").ToString)) Then
             Dim id_cliente As Integer = Val(dt(i)("id_cliente").ToString)
             'Dim id_estado_cuenta As Integer = registrarEstado(Val(dt(i)("id_cliente").ToString), id_contrato, Val(dt(i)("estatus").ToString))
@@ -6320,6 +6326,18 @@ lateFeeText))
       gvContratos.DataSource = dt
     End If
   End Sub
+
+  ' Candado de seguridad para volver a correr "Generar Todos" sobre una fecha ya procesada
+  ' parcialmente (pedido 2026-10-06, tras el hueco de 2+ dias sin corrida automatica) --
+  ' registerBill NO valida duplicados por su cuenta, siempre inserta: sin este chequeo, re-correr
+  ' el lote para un contrato que ya se corrigio manualmente (aunque ya este pagado, estatus=0)
+  ' crearia un segundo ESTADOS_CUENTA para el mismo periodo.
+  Private Function YaExistePeriodo(ByVal id_contrato As Integer, ByVal periodoA As Date) As Boolean
+    Dim sql As String = "select count(*) as cont from ESTADOS_CUENTA where id_contrato=" & id_contrato &
+      " and DATEDIFF(day,periodoA,convert(date,'" & periodoA & "',103))=0;"
+    Dim dt As DataTable = con.ConsultarDT(sql)
+    Return dt IsNot Nothing AndAlso dt.Rows.Count > 0 AndAlso Val(dt(0)("cont").ToString) > 0
+  End Function
 
   Private Function revisarEstados(ByVal id_cliente As Integer, ByVal id_contrato As Integer, ByVal estatus As Integer) As Boolean
     Dim cont As Integer = 0
