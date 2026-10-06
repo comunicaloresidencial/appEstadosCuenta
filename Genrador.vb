@@ -2922,7 +2922,8 @@ ON s.id_servicio = dp.id_servicio WHERE id_paquete=" & id_paquete & " ORDER BY i
         imgAvisoPago.Alignment =
         iTextSharp.text.Element.ALIGN_CENTER
 
-        documento.Add(imgAvisoPago)
+        ' Esto debe verse cuando el proceso de pago tardío ya este en funcionamiento.
+        'documento.Add(imgAvisoPago)
 
       End If
 
